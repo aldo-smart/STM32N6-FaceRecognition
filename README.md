@@ -147,14 +147,14 @@ Camera → ISP → Face Detection (NPU) → Face Cropping → Face Recognition (
 - **Input**: 128x128 RGB
 - **Output**: Face bounding boxes + keypoints
 - **Quantization**: INT8
-- **Performance**: ~100ms inference time
+- **Performance**: ~9ms inference time
 
 ### Face Recognition Model
 - **Architecture**: MobileFaceNet
 - **Input**: 112x112 RGB aligned faces
 - **Output**: 128-dimensional embeddings
 - **Quantization**: INT8
-- **Performance**: ~50ms inference time
+- **Performance**: ~120ms inference time
 
 ## Configuration
 
