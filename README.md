@@ -13,6 +13,8 @@ A comprehensive embedded face recognition system implementing real-time face det
 - **LCD Display Output** with face detection visualization
 - **Optimized Performance** for embedded deployment
 
+![](demo.gif)
+
 ## 🚀 Quick Start
 
 ### Prerequisites
