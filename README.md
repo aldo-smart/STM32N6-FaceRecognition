@@ -214,7 +214,7 @@ python run_ui.py  # Launch GUI interface
 - **Face Detection**: 8-10 FPS (including preprocessing)
 - **Face Recognition**: 15-20 FPS per face
 - **Memory Usage**: ~800KB RAM, ~25MB External Flash (including AI models)
-- **Power Consumption**: ~2W typical operation
+- **Power Consumption**: ~0.25 W for the MCU only during full operation
 
 ### Optimization Features
 - **NPU Acceleration** for neural network inference
