@@ -8,6 +8,7 @@
 #include "pd_pp_output_if.h"
 #include "app_constants.h"
 #include <math.h>
+#include <assert.h>
 #ifdef ENABLE_LCD_DISPLAY
 #include "stm32n6570_discovery_lcd.h"
 #include "stm32_lcd_ex.h"

@@ -3,37 +3,37 @@
   "version": "1.0.0",
   "tools": {
     "stm32cubeide": {
-      "path": "/path/to/STM32CubeIDE",
+      "path": "D:/SMART_SENSING/STM/STM32CubeIDE_1.18.1/STM32CubeIDE",
       "description": "STM32CubeIDE installation directory",
       "required": true,
       "executable": "stm32cubeide"
     },
     "stm32edgeai": {
-      "path": "/home/vboxuser/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/10.1.0/Utilities/linux/stedgeai",
+      "path": "C:/ST/STEdgeAI/2.2/Utilities/windows/stedgeai.exe",
       "description": "STM32 Edge AI tool (stedgeai) executable path",
       "required": true,
       "executable": "stedgeai"
     },
     "stm32programmer": {
-      "path": "/home/vboxuser/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_Programmer_CLI",
+      "path": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin",
       "description": "STM32CubeProgrammer CLI tool path",
       "required": true,
       "executable": "STM32_Programmer_CLI"
     },
     "stm32signingtool": {
-      "path": "/home/vboxuser/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_SigningTool_CLI",
+      "path": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin",
       "description": "STM32 Signing Tool CLI path",
       "required": true,
       "executable": "STM32_SigningTool_CLI"
     },
     "arm_gcc_toolchain": {
-      "path": "/path/to/arm-none-eabi-gcc",
+      "path": "D:/SMART_SENSING/STM/STM32CubeIDE_1.18.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin",
       "description": "ARM GCC toolchain bin directory",
       "required": true,
       "executable": "arm-none-eabi-gcc"
     },
     "external_loader": {
-      "path": "/home/vboxuser/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr",
+      "path": "D:/SMART_SENSING/STM/STM32CubeIDE_1.18.18STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.win32_2.2.100.202412061334/tools/bin/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr",
       "description": "External flash loader for STM32N6570-DK",
       "required": true
     }

@@ -68,6 +68,8 @@ C_SOURCES += STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_crc.
 C_SOURCES += STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_crc_ex.c
 C_SOURCES += STM32Cube_FW_N6/Drivers/BSP/STM32N6570-DK/stm32n6570_discovery.c
 C_SOURCES += STM32Cube_FW_N6/Drivers/BSP/STM32N6570-DK/stm32n6570_discovery_bus.c
+C_SOURCES += STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart.c
+C_SOURCES += STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart_ex.c
 C_SOURCES += Middlewares/Camera_Middleware/cmw_camera.c
 C_SOURCES += Middlewares/Camera_Middleware/cmw_utils.c
 C_SOURCES += STM32Cube_FW_N6/Drivers/BSP/STM32N6570-DK/stm32n6570_discovery_lcd.c
@@ -90,7 +92,7 @@ C_SOURCES += Src/enhanced_pc_stream.c
 
 C_SOURCES += Src/face_utils.c
 C_SOURCES += Src/target_embedding.c
-C_SOURCES += dummy_buffer/dummy_dual_buffer.c
+C_SOURCES += ../dummy_buffer/dummy_dual_buffer.c
 C_SOURCES += Middlewares/Camera_Middleware/ISP_Library/isp/Src/isp_algo.c
 C_SOURCES += Middlewares/Camera_Middleware/ISP_Library/isp/Src/isp_cmd_parser.c
 C_SOURCES += Middlewares/Camera_Middleware/ISP_Library/isp/Src/isp_core.c
@@ -106,6 +108,9 @@ C_SOURCES += Middlewares/AI_Runtime/Npu/ll_aton/ll_sw_integer.c
 C_SOURCES += Middlewares/AI_Runtime/Npu/ll_aton/ll_aton_lib.c
 C_SOURCES += Middlewares/AI_Runtime/Npu/ll_aton/ll_aton_lib_sw_operators.c
 
+C_SOURCES += Src/app_config_manager.c
+C_SOURCES += Middlewares/lib_vision_models_pp/lib_vision_models_pp/Src/pd_pp_model.c
+C_SOURCES += STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_exti.c
 
 # ASM sources
 ASM_SOURCES += STM32Cube_FW_N6/Drivers/CMSIS/Device/ST/STM32N6xx/Source/Templates/gcc/startup_stm32n657xx_fsbl.s
@@ -169,7 +174,7 @@ C_INCLUDES += -IMiddlewares/Camera_Middleware/sensors/vd55g1
 C_INCLUDES += -IMiddlewares/Camera_Middleware/sensors/vd6g
 
 C_INCLUDES += -IInc
-C_INCLUDES += -Idummy_buffer
+C_INCLUDES += -I../dummy_buffer
 C_INCLUDES += -IMiddlewares/lib_vision_models_pp/lib_vision_models_pp/Inc
 C_INCLUDES += -IMiddlewares/AI_Runtime/Npu/ll_aton
 C_INCLUDES += -ISTM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc
@@ -211,6 +216,7 @@ LIBDIR += -LMiddlewares/Camera_Middleware/ISP_Library/evision/Lib
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 # Uncomment to enable %f formatted output
 LDFLAGS += -u _printf_float
+LDFLAGS += -u assert
 LDFLAGS += -Wl,--print-memory-usage
 # Avoid 'build/Project.elf has a LOAD segment with RWX permissions' warning
 LDFLAGS += -Wl,--no-warn-rwx-segments
