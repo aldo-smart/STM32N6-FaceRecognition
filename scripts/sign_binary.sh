@@ -37,13 +37,24 @@ load_config() {
     fi
     
     # Extract tool paths from config
-    SIGNING_TOOL_PATH=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['tools']['stm32signingtool']['path'])" 2>/dev/null || echo "")
-    ARM_OBJCOPY_PATH=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['tools']['arm_gcc_toolchain']['path'])" 2>/dev/null || echo "")
-    APPLICATION_ADDRESS=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['memory_layout']['application_address'])" 2>/dev/null || echo "0x70100000")
-    DEFAULT_BINARY_PATH=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['build']['application_binary_path'])" 2>/dev/null || echo "")
+    cd "$PROJECT_ROOT"
+    SIGNING_TOOL_DIR=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['tools']['stm32signingtool']['path'])" 2>/dev/null || echo "")
+    SIGNING_TOOL_EXECUTABLE=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['tools']['stm32signingtool']['executable'])" 2>/dev/null || echo "STM32_SigningTool_CLI")
+    
+    # Build full path to signing tool
+    if [[ "$SIGNING_TOOL_DIR" == *"Program Files"* ]] || [[ "$SIGNING_TOOL_DIR" == *"C:/"* ]]; then
+        # Windows path - add .exe extension
+        SIGNING_TOOL_PATH="$SIGNING_TOOL_DIR/$SIGNING_TOOL_EXECUTABLE.exe"
+    else
+        # Unix path - no extension
+        SIGNING_TOOL_PATH="$SIGNING_TOOL_DIR/$SIGNING_TOOL_EXECUTABLE"
+    fi
+    ARM_OBJCOPY_PATH=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['tools']['arm_gcc_toolchain']['path'])" 2>/dev/null || echo "")
+    APPLICATION_ADDRESS=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['memory_layout']['application_address'])" 2>/dev/null || echo "0x70100000")
+    DEFAULT_BINARY_PATH=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['build']['application_binary_path'])" 2>/dev/null || echo "")
     
     # Validate signing tool path
-    if [ -z "$SIGNING_TOOL_PATH" ] || [ "$SIGNING_TOOL_PATH" = "/path/to/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_SigningTool_CLI" ]; then
+    if [ -z "$SIGNING_TOOL_DIR" ] || [ "$SIGNING_TOOL_DIR" = "/path/to/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin" ]; then
         print_error "STM32 Signing Tool path not configured in $CONFIG_FILE"
         print_error "Please update the 'stm32signingtool.path' field with your actual installation path"
         exit 1
@@ -257,7 +268,8 @@ main() {
     # Check if input binary is provided, use default if not 
     if [ -z "$input_binary" ]; then
         # Try to get default binary path from config
-        local default_path=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['build']['application_binary_path'])" 2>/dev/null || echo "")
+        cd "$PROJECT_ROOT"
+        local default_path=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['build']['application_binary_path'])" 2>/dev/null || echo "")
         
         if [ -n "$default_path" ]; then
             # Use configured path, resolve relative to project root

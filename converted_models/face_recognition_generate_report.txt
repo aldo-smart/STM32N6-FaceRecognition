@@ -1,6 +1,6 @@
-ST Edge AI Core v2.1.0-20194 329b0e98d
-Created date          : 2025-07-26 01:17:32
-Parameters            : generate --name face_recognition --model /home/vboxuser/development/STM32N6-FaceRecognition/input_models/mobilefacenet_int8_faces.onnx --target stm32n6 --st-neural-art face_recognition@/tmp/face_recognition_config.json --input-data-type float32 --output /home/vboxuser/development/STM32N6-FaceRecognition/converted_models
+ST Edge AI Core v2.2.0-20266 2adc00962
+Created date          : 2025-07-30 17:07:09
+Parameters            : generate --name face_recognition --model input_models\mobilefacenet_int8_faces.onnx --target stm32n6 --st-neural-art face_recognition@D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\temp\face_recognition_config.json --input-data-type float32 --output D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\converted_models
 
 Model name - mobilefacenet_int8_faces
 ------ --------------------------------------------------- ----------------------- --------------- ------------ -------------------------------- 
@@ -346,13 +346,13 @@ m_id   layer (original)                                    oshape               
 ------ --------------------------------------------------- ----------------------- --------------- ------------ -------------------------------- 
 169    _output_layer_conv.._quantized (Reshape)            [b:1,c:512]                                            _output_layer_conv.._quantized 
 ------ --------------------------------------------------- ----------------------- --------------- ------------ -------------------------------- 
-170    _output_layer_line.._quantized (QLinearMatMul)      [b:1,c:128]             65,664/66,048         65,664   _output_layer_conv.._quantized 
+170    _output_layer_line.._quantized (QLinearMatMul)      [b:1,c:128]             65,536/65,536         65,536   _output_layer_conv.._quantized 
 ------ --------------------------------------------------- ----------------------- --------------- ------------ -------------------------------- 
 171    _output_layer_line..l_output_0 (DequantizeLinear)   [b:1,c:128]                                      256   _output_layer_line.._quantized 
 ------ --------------------------------------------------- ----------------------- --------------- ------------ -------------------------------- 
 172    output (BatchNormalization)                         [b:1,c:128]             256/1,024                256   _output_layer_line..l_output_0 
 ------ --------------------------------------------------- ----------------------- --------------- ------------ -------------------------------- 
-model: macc=237,973,824 weights=1,046,400 activations=-- io=--
+model: macc=237,973,696 weights=1,045,888 activations=-- io=--
 
 
 
@@ -360,8 +360,8 @@ model: macc=237,973,824 weights=1,046,400 activations=-- io=--
 
 Compilation details
 ------------------------------------------------------------------------------------
-Compiler version: 1.1.0-31
-Compiler arguments:  -i /home/vboxuser/development/STM32N6-FaceRecognition/converted_models/mobilefacenet_int8_faces_OE_3_2_0.onnx --json-quant-file /home/vboxuser/development/STM32N6-FaceRecognition/converted_models/mobilefacenet_int8_faces_OE_3_2_0_Q.json -g face_recognition.c --load-mdesc /home/vboxuser/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/10.1.0/Utilities/configs/stm32n6.mdesc --load-mpool /tmp/face_recognition.mpool --save-mpool-file /home/vboxuser/development/STM32N6-FaceRecognition/st_ai_ws/neural_art__face_recognition/face_recognition.mpool --out-dir-prefix /home/vboxuser/development/STM32N6-FaceRecognition/st_ai_ws/neural_art__face_recognition/ -O0 --all-buffers-info --mvei --cache-maintenance --Oalt-sched --enable-virtual-mem-pools --Omax-ca-pipe 4 --Ocache-opt --Os --enable-epoch-controller --output-info-file c_info.json --network-name face_recognition
+Compiler version: 1.1.1-14
+Compiler arguments:  -i D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\converted_models\mobilefacenet_int8_faces_OE_3_3_0.onnx --json-quant-file D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\converted_models\mobilefacenet_int8_faces_OE_3_3_0_Q.json -g face_recognition.c --load-mdesc C:\ST\STEdgeAI\2.2\Utilities\configs\stm32n6.mdesc --load-mpool D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\temp\face_recognition.mpool --save-mpool-file D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\st_ai_ws\neural_art__face_recognition\face_recognition.mpool --out-dir-prefix D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\st_ai_ws\neural_art__face_recognition/ -O0 --all-buffers-info --mvei --cache-maintenance --Oalt-sched --enable-virtual-mem-pools --Omax-ca-pipe 4 --Ocache-opt --Os --enable-epoch-controller --native-float --output-info-file c_info.json --network-name face_recognition
 ====================================================================================
 
 Memory usage information  (input/output buffers are included in activations)
@@ -373,10 +373,10 @@ Memory usage information  (input/output buffers are included in activations)
 	npuRAM4    [0x34270000 - 0x342E0000]:    448.000 kB /    448.000 kB  (100.00 % used) -- weights:          0  B (  0.00 % used)  activations:    448.000 kB (100.00 % used)
 	npuRAM5    [0x342E0000 - 0x34350000]:    448.000 kB /    448.000 kB  (100.00 % used) -- weights:          0  B (  0.00 % used)  activations:    448.000 kB (100.00 % used)
 	npuRAM6    [0x34350000 - 0x343C0000]:     84.000 kB /    448.000 kB  ( 18.75 % used) -- weights:          0  B (  0.00 % used)  activations:     84.000 kB ( 18.75 % used)
-	octoFlash  [0x72000000 - 0x75D00000]:      1.185 MB /     61.000 MB  (  1.94 % used) -- weights:      1.185 MB (  1.94 % used)  activations:          0  B (  0.00 % used)
+	octoFlash  [0x72000000 - 0x75D00000]:      1.065 MB /     61.000 MB  (  1.75 % used) -- weights:      1.065 MB (  1.75 % used)  activations:          0  B (  0.00 % used)
 	hyperRAM   [0x90000000 - 0x91000000]:      1.531 MB /     16.000 MB  (  9.57 % used) -- weights:          0  B (  0.00 % used)  activations:      1.531 MB (  9.57 % used)
 ---
-Total:                                             5.111 MB                                  -- weights:      1.185 MB                  activations:      3.926 MB                   
+Total:                                             4.991 MB                                  -- weights:      1.065 MB                  activations:      3.926 MB                   
 ====================================================================================
 
 
@@ -387,13 +387,13 @@ Used memory ranges
 	npuRAM4    [0x34270000 - 0x342E0000]: 0x34270000-0x342E0000
 	npuRAM5    [0x342E0000 - 0x34350000]: 0x342E0000-0x34350000
 	npuRAM6    [0x34350000 - 0x343C0000]: 0x34350000-0x34365000
-	octoFlash  [0x72000000 - 0x75D00000]: 0x72000000-0x7212F5B0
+	octoFlash  [0x72000000 - 0x75D00000]: 0x72000000-0x72110AB0
 	hyperRAM   [0x90000000 - 0x91000000]: 0x90000000-0x90188000
 ====================================================================================
 
 Epochs details
 ------------------------------------------------------------------------------------
-Total number of epochs: 165 of which 112 implemented in software
+Total number of epochs: 164 of which 111 implemented in software
 ---
 epoch ID   HW/SW/EC Operation (SW only)
 epoch 1       EC    
@@ -559,6 +559,35 @@ epoch 160     EC
 epoch 161     EC    
 epoch 162     EC    
 epoch 163    -SW-   (  DequantizeLinear  )
-epoch 164    -SW-   (        Mul         )
-epoch 165    -SW-   (        Add         )
-====================================================================================
+epoch 164    -SW-   ( BatchNormalization )
+==================================================================================== 
+ Requested memory size by section - "stm32n6npu" target
+ ------------------------------- -------- ----------- ------ ----------- 
+ module                              text      rodata   data         bss 
+ ------------------------------- -------- ----------- ------ ----------- 
+ face_recognition.o                15,668     208,628      0           0 
+ NetworkRuntime1020_CM55_GCC.a     11,132           0      0           0 
+ lib (toolchain)*                  11,308       2,254      0           0 
+ ll atonn runtime                  10,652       3,860     72       1,637 
+ ------------------------------- -------- ----------- ------ ----------- 
+ RT total**                        48,760     214,742     72       1,637 
+ ------------------------------- -------- ----------- ------ ----------- 
+ weights                                0   1,116,833      0           0 
+ activations                            0           0      0   4,116,480 
+ io                                     0           0      0           0 
+ ------------------------------- -------- ----------- ------ ----------- 
+ TOTAL                             48,760   1,331,575     72   4,118,117 
+ ------------------------------- -------- ----------- ------ ----------- 
+ *  toolchain objects (libm/libgcc*)
+ ** RT AI runtime objects (kernels+infrastructure)
+  
+  Summary - "stm32n6npu" target
+  ---------------------------------------------------
+               FLASH (ro)      %*    RAM (rw)      % 
+  ---------------------------------------------------
+  RT total        263,574   19.1%       1,709   0.0% 
+  ---------------------------------------------------
+  TOTAL         1,380,407           4,118,189        
+  ---------------------------------------------------
+  *  rt/total
+

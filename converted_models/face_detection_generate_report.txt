@@ -1,6 +1,6 @@
-ST Edge AI Core v2.1.0-20194 329b0e98d
-Created date          : 2025-07-26 01:17:49
-Parameters            : generate --name face_detection --model /home/vboxuser/development/STM32N6-FaceRecognition/input_models/centerface.tflite --target stm32n6 --st-neural-art face_detection@/tmp/face_detection_config.json --input-data-type float32 --output /home/vboxuser/development/STM32N6-FaceRecognition/converted_models
+ST Edge AI Core v2.2.0-20266 2adc00962
+Created date          : 2025-07-30 16:51:09
+Parameters            : generate --name face_detection --model input_models\centerface.tflite --target stm32n6 --st-neural-art face_detection@D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\temp\face_detection_config.json --input-data-type float32 --output D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\converted_models
 
 Model name - centerface
 ------ ------------------------------- ----------------------- ----------------- ----------- ------------------------ 
@@ -243,8 +243,8 @@ model: macc=100,287,399 weights=1,867,876 activations=-- io=--
 
 Compilation details
 ------------------------------------------------------------------------------------
-Compiler version: 1.1.0-31
-Compiler arguments:  -i /home/vboxuser/development/STM32N6-FaceRecognition/converted_models/centerface_OE_3_2_0.onnx --json-quant-file /home/vboxuser/development/STM32N6-FaceRecognition/converted_models/centerface_OE_3_2_0_Q.json -g face_detection.c --load-mdesc /home/vboxuser/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/10.1.0/Utilities/configs/stm32n6.mdesc --load-mpool /tmp/face_detection.mpool --save-mpool-file /home/vboxuser/development/STM32N6-FaceRecognition/st_ai_ws/neural_art__face_detection/face_detection.mpool --out-dir-prefix /home/vboxuser/development/STM32N6-FaceRecognition/st_ai_ws/neural_art__face_detection/ -O0 --all-buffers-info --mvei --cache-maintenance --Oalt-sched --enable-virtual-mem-pools --Omax-ca-pipe 4 --Ocache-opt --Os --enable-epoch-controller --output-info-file c_info.json --network-name face_detection
+Compiler version: 1.1.1-14
+Compiler arguments:  -i D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\converted_models\centerface_OE_3_3_0.onnx --json-quant-file D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\converted_models\centerface_OE_3_3_0_Q.json -g face_detection.c --load-mdesc C:\ST\STEdgeAI\2.2\Utilities\configs\stm32n6.mdesc --load-mpool D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\temp\face_detection.mpool --save-mpool-file D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\st_ai_ws\neural_art__face_detection\face_detection.mpool --out-dir-prefix D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\st_ai_ws\neural_art__face_detection/ -O0 --all-buffers-info --mvei --cache-maintenance --Oalt-sched --enable-virtual-mem-pools --Omax-ca-pipe 4 --Ocache-opt --Os --enable-epoch-controller --output-info-file c_info.json --network-name face_detection
 ====================================================================================
 
 Memory usage information  (input/output buffers are included in activations)
@@ -356,4 +356,34 @@ epoch 78      EC
 epoch 79      EC    
 epoch 80     -SW-   (  DequantizeLinear  )
 epoch 81      EC    
-====================================================================================
+==================================================================================== 
+ Requested memory size by section - "stm32n6npu" target
+ ------------------------------- -------- ----------- ------ --------- 
+ module                              text      rodata   data       bss 
+ ------------------------------- -------- ----------- ------ --------- 
+ face_detection.o                   1,060     330,087      0         0 
+ NetworkRuntime1020_CM55_GCC.a      3,068           0      0         0 
+ lib (toolchain)*                     902         624      0         0 
+ ll atonn runtime                   8,648       4,130    192     1,637 
+ ------------------------------- -------- ----------- ------ --------- 
+ RT total**                        13,678     334,841    192     1,637 
+ ------------------------------- -------- ----------- ------ --------- 
+ weights                                0   2,455,409      0         0 
+ activations                            0           0      0   491,520 
+ io                                     0           0      0         0 
+ ------------------------------- -------- ----------- ------ --------- 
+ TOTAL                             13,678   2,790,250    192   493,157 
+ ------------------------------- -------- ----------- ------ --------- 
+ *  toolchain objects (libm/libgcc*)
+ ** RT AI runtime objects (kernels+infrastructure)
+  
+  Summary - "stm32n6npu" target
+  --------------------------------------------------
+               FLASH (ro)      %*   RAM (rw)      % 
+  --------------------------------------------------
+  RT total        348,711   12.4%      1,829   0.4% 
+  --------------------------------------------------
+  TOTAL         2,804,120            493,349        
+  --------------------------------------------------
+  *  rt/total
+

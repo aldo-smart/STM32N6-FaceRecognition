@@ -43,11 +43,22 @@ load_config() {
     fi
     
     # Extract tool paths from config
-    PROGRAMMER_PATH=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['tools']['stm32programmer']['path'])" 2>/dev/null || echo "")
-    EXTERNAL_LOADER_PATH=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['tools']['external_loader']['path'])" 2>/dev/null || echo "")
+    cd "$PROJECT_ROOT"
+    PROGRAMMER_DIR=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['tools']['stm32programmer']['path'])" 2>/dev/null || echo "")
+    PROGRAMMER_EXECUTABLE=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['tools']['stm32programmer']['executable'])" 2>/dev/null || echo "STM32_Programmer_CLI")
+    
+    # Build full path to programmer
+    if [[ "$PROGRAMMER_DIR" == *"Program Files"* ]] || [[ "$PROGRAMMER_DIR" == *"C:/"* ]]; then
+        # Windows path - add .exe extension
+        PROGRAMMER_PATH="$PROGRAMMER_DIR/$PROGRAMMER_EXECUTABLE.exe"
+    else
+        # Unix path - no extension
+        PROGRAMMER_PATH="$PROGRAMMER_DIR/$PROGRAMMER_EXECUTABLE"
+    fi
+    EXTERNAL_LOADER_PATH=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['tools']['external_loader']['path'])" 2>/dev/null || echo "")
     
     # Validate programmer path
-    if [ -z "$PROGRAMMER_PATH" ] || [ "$PROGRAMMER_PATH" = "/path/to/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_Programmer_CLI" ]; then
+    if [ -z "$PROGRAMMER_DIR" ] || [ "$PROGRAMMER_DIR" = "/path/to/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin" ]; then
         print_error "STM32 Programmer path not configured in $CONFIG_FILE"
         print_error "Please update the 'stm32programmer.path' field with your actual installation path"
         exit 1
@@ -228,7 +239,8 @@ flash_application() {
 
 # Function to get available models from config
 get_available_models() {
-    python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(' '.join(config['models'].keys()))" 2>/dev/null || echo ""
+    cd "$PROJECT_ROOT"
+    python -c "import json; config=json.load(open('stm32_tools_config.json')); print(' '.join(config['models'].keys()))" 2>/dev/null || echo ""
 }
 
 # Function to flash a model
@@ -272,8 +284,9 @@ show_memory_layout() {
     echo "┌─────────────────────────────────────────┐"
     
     # Show FSBL and Application
-    local fsbl_address=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['memory_layout']['fsbl_address'])" 2>/dev/null || echo "0x70000000")
-    local app_address=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['memory_layout']['application_address'])" 2>/dev/null || echo "0x70100000")
+    cd "$PROJECT_ROOT"
+    local fsbl_address=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['memory_layout']['fsbl_address'])" 2>/dev/null || echo "0x70000000")
+    local app_address=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['memory_layout']['application_address'])" 2>/dev/null || echo "0x70100000")
     
     echo "│ $fsbl_address - FSBL (1MB)                │"
     echo "├─────────────────────────────────────────┤"
@@ -282,7 +295,8 @@ show_memory_layout() {
     # Show models dynamically
     local available_models=$(get_available_models)
     for model_type in $available_models; do
-        local address=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['models']['$model_type']['address'])" 2>/dev/null || echo "N/A")
+        cd "$PROJECT_ROOT"
+        local address=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['models']['$model_type']['address'])" 2>/dev/null || echo "N/A")
         local model_name=$(echo "$model_type" | sed 's/_/ /g' | sed 's/\b\w/\U&/g')
         echo "├─────────────────────────────────────────┤"
         printf "│ %-39s │\n" "$address - $model_name (16MB)"

@@ -33,7 +33,7 @@
       "executable": "arm-none-eabi-gcc"
     },
     "external_loader": {
-      "path": "D:/SMART_SENSING/STM/STM32CubeIDE_1.18.18STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.win32_2.2.100.202412061334/tools/bin/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr",
+      "path": "D:/SMART_SENSING/STM/STM32CubeIDE_1.18.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.win32_2.2.100.202412061334/tools/bin/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr",
       "description": "External flash loader for STM32N6570-DK",
       "required": true
     }
@@ -43,7 +43,7 @@
     "application_address": "0x70100000"
   },
   "build": {
-    "application_binary_path": "./embedded/STM32CubeIDE/Debug/STM32N6_FaceRecognition.bin",
+    "application_binary_path": "embedded/build/Project.bin",
     "description": "Default path to application binary for signing"
   },
   "models": {
@@ -53,7 +53,7 @@
       "address": "0x72000000",
       "target": "stm32n6",
       "input_data_type": "float32",
-      "stedgeai_options": "-O0 --all-buffers-info --mvei --cache-maintenance --Oalt-sched --enable-virtual-mem-pools --Omax-ca-pipe 4 --Ocache-opt --Os --enable-epoch-controller"
+      "stedgeai_options": "-O0 --all-buffers-info --mvei --cache-maintenance --Oalt-sched --enable-virtual-mem-pools --Omax-ca-pipe 4 --Ocache-opt --Os --enable-epoch-controller --native-float"
     },
     "face_detection": {
       "name": "face_detection",

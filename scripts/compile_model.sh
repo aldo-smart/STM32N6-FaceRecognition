@@ -37,7 +37,8 @@ load_config() {
     fi
     
     # Extract STM32EdgeAI path from config
-    STEDGEAI_PATH=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['tools']['stm32edgeai']['path'])" 2>/dev/null || echo "")
+    cd "$PROJECT_ROOT"
+    STEDGEAI_PATH=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['tools']['stm32edgeai']['path'])" 2>/dev/null || echo "")
     
     if [ -z "$STEDGEAI_PATH" ] || [ "$STEDGEAI_PATH" = "/path/to/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/10.1.0/Utilities/linux/stedgeai" ]; then
         print_error "STM32EdgeAI path not configured in $CONFIG_FILE"
@@ -83,7 +84,8 @@ generate_memory_pool() {
     local mpool_file="$2"
     
     # Get memory address for this model type
-    local address=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['models']['$model_type']['address'])")
+    cd "$PROJECT_ROOT"
+    local address=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['models']['$model_type']['address'])")
     
     print_status "Generating memory pool for $model_type at address $address"
     
@@ -190,20 +192,25 @@ EOF
 create_neural_art_config() {
     local model_type="$1"
     local config_file="$2"
-    local mpool_file="/tmp/${model_type}.mpool"
+    local mpool_file="$PROJECT_ROOT/temp/${model_type}.mpool"
     
     # Generate dynamic memory pool file
     generate_memory_pool "$model_type" "$mpool_file"
     
     # Get model configuration from main config
-    local options=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['models']['$model_type']['stedgeai_options'])")
+    cd "$PROJECT_ROOT"
+    local options=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['models']['$model_type']['stedgeai_options'])")
+    
+    # Convert memory pool file path to Windows format and escape backslashes for JSON
+    local win_mpool_file=$(cygpath -w "$mpool_file" 2>/dev/null || echo "$mpool_file")
+    win_mpool_file=${win_mpool_file//\\/\\\\}
     
     cat > "$config_file" << EOF
 {
     "Globals": {},
     "Profiles": {
         "$model_type": {
-            "memory_pool": "$mpool_file",
+            "memory_pool": "$win_mpool_file",
             "options": "$options"
         }
     }
@@ -218,18 +225,20 @@ convert_model() {
     local model_type="$1"
     local model_file="$2"
     local output_dir="$PROJECT_ROOT/converted_models"
-    local config_file="/tmp/${model_type}_config.json"
+    local config_file="$PROJECT_ROOT/temp/${model_type}_config.json"
     
-    # Create output directory
+    # Create output and temp directories
     mkdir -p "$output_dir"
+    mkdir -p "$PROJECT_ROOT/temp"
     
     # Create neural art configuration
     create_neural_art_config "$model_type" "$config_file"
     
     # Get model configuration
-    local output_name=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['models']['$model_type']['name'])")
-    local target=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['models']['$model_type']['target'])")
-    local input_data_type=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['models']['$model_type']['input_data_type'])")
+    cd "$PROJECT_ROOT"
+    local output_name=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['models']['$model_type']['name'])")
+    local target=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['models']['$model_type']['target'])")
+    local input_data_type=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['models']['$model_type']['input_data_type'])")
     
     print_status "Converting $model_type model: $(basename "$model_file")"
     print_status "Output directory: $output_dir"
@@ -237,14 +246,19 @@ convert_model() {
     # Run STM32EdgeAI conversion
     cd "$PROJECT_ROOT"
     
+    # Convert paths to Windows format for stedgeai
+    local win_model_file=$(cygpath -w "$model_file" 2>/dev/null || echo "$model_file")
+    local win_config_file=$(cygpath -w "$config_file" 2>/dev/null || echo "$config_file")
+    local win_output_dir=$(cygpath -w "$output_dir" 2>/dev/null || echo "$output_dir")
+    
     local cmd=(
         "$STEDGEAI_PATH" "generate"
         "--name" "$output_name"
-        "--model" "$model_file"
+        "--model" "$win_model_file"
         "--target" "$target"
-        "--st-neural-art" "${model_type}@${config_file}"
+        "--st-neural-art" "${model_type}@${win_config_file}"
         "--input-data-type" "$input_data_type"
-        "--output" "$output_dir"
+        "--output" "$win_output_dir"
     )
     
     print_status "Running: ${cmd[*]}"
@@ -272,14 +286,14 @@ convert_model() {
         
         # Clean up temp config and memory pool files
         rm -f "$config_file"
-        rm -f "/tmp/${model_type}.mpool"
+        rm -f "$PROJECT_ROOT/temp/${model_type}.mpool"
         
         return 0
     else
         print_error "Model conversion failed - essential files not generated"
         print_error "Exit code: $conversion_exit_code"
         rm -f "$config_file"
-        rm -f "/tmp/${model_type}.mpool"
+        rm -f "$PROJECT_ROOT/temp/${model_type}.mpool"
         return 1
     fi
 }
@@ -318,7 +332,8 @@ organize_output_files() {
         print_status "Copied binary: $(basename "$binary_file") to binaries/${model_type}_data.bin"
         
         # Get memory address for this model type
-        local address=$(python3 -c "import json; config=json.load(open('$CONFIG_FILE')); print(config['models']['$model_type']['address'])")
+        cd "$PROJECT_ROOT"
+        local address=$(python -c "import json; config=json.load(open('stm32_tools_config.json')); print(config['models']['$model_type']['address'])")
         
         # Convert to Intel HEX format
         if command -v arm-none-eabi-objcopy &> /dev/null; then
