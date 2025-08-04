@@ -62,6 +62,14 @@
       "target": "stm32n6",
       "input_data_type": "float32",
       "stedgeai_options": "-O0 --all-buffers-info --mvei --cache-maintenance --Oalt-sched --enable-virtual-mem-pools --Omax-ca-pipe 4 --Ocache-opt --Os --enable-epoch-controller"
+    },
+    "weed_detection": {
+      "name": "weed_detection",
+      "filename": "YOLOV5_WEEDS_STM_640_INT8.onnx",
+      "address": "0x90000000",
+      "target": "stm32n6",
+      "input_data_type": "float32",
+      "stedgeai_options": "-O0 --all-buffers-info --mvei --cache-maintenance --Oalt-sched --enable-virtual-mem-pools --Omax-ca-pipe 2 --Ocache-opt --Os --enable-epoch-controller --native-float"
     }
 
   }

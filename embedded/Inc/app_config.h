@@ -53,19 +53,29 @@
 #define LCD_FG_FRAMEBUFFER_SIZE  (LCD_FG_WIDTH * LCD_FG_HEIGHT * 2)
 
 /* Model Related Info */
-#define POSTPROCESS_TYPE POSTPROCESS_MPE_PD_UF
+#define POSTPROCESS_TYPE POSTPROCESS_OD_YOLO_V5_UU
 
-#define NN_WIDTH (128)
-#define NN_HEIGHT (128)
+#define NN_WIDTH (640)
+#define NN_HEIGHT (640)
 #define NN_BPP (3)
 
 #define COLOR_BGR (0)
 #define COLOR_RGB (1)
 #define COLOR_MODE COLOR_RGB
 
-#define NB_CLASSES 1
+#define NB_CLASSES 11
 #define CLASSES_TABLE const char* classes_table[NB_CLASSES] = {\
-"face"}
+"weed", \
+"Erva quente (Spermacoce latifolia)", \
+"Capim pé de galinha (Eleusine indica)", \
+"Capim-braquiária (Brachiaria decumbens)", \
+"Vassourinha de botão (Spermacoce verticillata)", \
+"Caruru (Amaranthus sp.)", \
+"Erva-de-santa-luzia (Euphorbia hirta)", \
+"Capim carrapicho (Cenchrus echinatus)", \
+"Capim Amargoso (Digitaria insularis)", \
+"Corda de Viola (Ipomea spp.)", \
+"Buva (Conyza spp.)"}
 /* Enable or disable LCD and PC streaming features */
 #define ENABLE_LCD_DISPLAY
 //#define ENABLE_PC_STREAM  // Disabled: using Enhanced_PC_STREAM instead
@@ -82,6 +92,15 @@
 #define AI_OBJDETECT_YOLOV2_PP_IOU_THRESHOLD     (0.3f)
 #define AI_OBJDETECT_YOLOV2_PP_MAX_BOXES_LIMIT   (10)
 
+/* YOLOv5 Weed Detection parameters */
+#define AI_OD_YOLOV5_PP_WIDTH                    (640)
+#define AI_OD_YOLOV5_PP_HEIGHT                   (640)
+#define AI_OD_YOLOV5_PP_NB_CLASSES              (11)
+#define AI_OD_YOLOV5_PP_TOTAL_BOXES             (15120)  // For 640x640: (80x80 + 40x40 + 20x20) * 3 anchors
+#define AI_OD_YOLOV5_PP_CONF_THRESHOLD          (0.25f)
+#define AI_OD_YOLOV5_PP_IOU_THRESHOLD           (0.45f)
+#define AI_OD_YOLOV5_PP_MAX_BOXES_LIMIT         (100)
+
 
 /* CenterFace detection parameters */
 #define AI_PD_MODEL_PP_WIDTH              (NN_WIDTH)
@@ -96,7 +115,7 @@
 #define MP_FACE_PP_CONF_THRESHOLD (0.5f)
 
 /* Display */
-#define WELCOME_MSG_1         "STM32N6 Face Recognition"
-#define WELCOME_MSG_2         "AI-Powered Smart Vision System"
+#define WELCOME_MSG_1         "STM32N6 Weed Detection"
+#define WELCOME_MSG_2         "AI-Powered Agricultural Vision System"
 
 #endif

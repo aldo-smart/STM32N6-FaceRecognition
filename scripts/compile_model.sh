@@ -65,12 +65,13 @@ show_usage() {
     echo "Usage: $0 <model_type> <model_file>"
     echo ""
     echo "Arguments:"
-    echo "  model_type    Either 'face_detection' or 'face_recognition'"
+    echo "  model_type    Either 'face_detection', 'face_recognition', or 'weed_detection'"
     echo "  model_file    Path to ONNX or TFLite model file"
     echo ""
     echo "Examples:"
     echo "  $0 face_detection ./input_models/centerface.tflite"
     echo "  $0 face_recognition ./input_models/mobilefacenet_int8_faces.onnx"
+    echo "  $0 weed_detection ./input_models/YOLOV5_WEEDS_STM_640.onnx"
     echo ""
     echo "Output:"
     echo "  Generated files will be placed in ./converted_models/"
@@ -400,9 +401,9 @@ main() {
     local model_file="$2"
     
     # Validate model type
-    if [ "$model_type" != "face_detection" ] && [ "$model_type" != "face_recognition" ]; then
+    if [ "$model_type" != "face_detection" ] && [ "$model_type" != "face_recognition" ] && [ "$model_type" != "weed_detection" ]; then
         print_error "Invalid model type: $model_type"
-        print_error "Must be either 'face_detection' or 'face_recognition'"
+        print_error "Must be either 'face_detection', 'face_recognition', or 'weed_detection'"
         exit 1
     fi
     
