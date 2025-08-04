@@ -1,0 +1,164 @@
+;; Start Blob '_ec_blob_weed_detection_227'
+;; Start Epoch 227
+label 0xe3
+writefield 0 4 [7] 0x1
+write 12 0 0x880000
+write 12 2 0x342bb000
+write 12 3 0x140014
+write 12 4 0xc00002
+write 12 6 0x4
+write 12 8 0x12c00
+write 12 7 0x30
+write 12 12 0x6
+write 12 12 0x7
+write 12 14 0x342cdc3f
+write 12 13 0x30
+write 12 9 0x24
+write 12 5 0xf00
+write 12 18 0x0
+write 12 10 0x100000
+write 12 17 0x0
+writefield 0 4 [8] 0x1
+write 13 0 0x880000
+write 13 2 0x342e0000
+write 13 3 0x280010
+write 13 4 0xa00002
+write 13 6 0x4
+write 13 8 0x19000
+write 13 7 0x28
+write 13 12 0x6
+write 13 12 0x7
+write 13 14 0x3432b03f
+write 13 13 0x78
+write 13 9 0x24
+write 13 5 0xa00
+write 13 18 0x0
+write 13 10 0x100000
+write 13 17 0x0
+writefield 0 4 [0] 0x1
+write 5 0 0x880008
+write 5 2 0x3432b000
+write 5 3 0x140014
+write 5 4 0x400002
+write 5 6 0x4
+write 5 8 0x6400
+write 5 7 0x10
+write 5 12 0x6
+write 5 12 0x7
+write 5 14 0x3433dc3f
+write 5 13 0x30
+write 5 9 0x24
+write 5 5 0x500
+write 5 18 0x0
+write 5 10 0x100000
+write 5 17 0x0
+writefield 0 4 [3] 0x1
+write 8 0 0x88010c
+write 8 2 0x34270000
+write 8 3 0x25800
+write 8 6 0x4b000
+write 8 8 0x0
+write 8 7 0x0
+write 8 12 0x6
+write 8 12 0x7
+write 8 14 0x342bb03f
+write 8 13 0x1
+write 8 9 0x24
+write 8 5 0x0
+write 8 18 0x0
+write 8 10 0x100000
+write 8 17 0x0
+write 4 0 0x2
+poll 4 0 [1] 0x0 100
+write 4 0 0x40000000
+poll 4 0 [30] 0x0 100
+write 4 0 0x1
+write 4 2 0xf
+write 4 5 0x11
+writefield 5 0 [0] 0x1
+writefield 8 0 [0] 0x1
+writefield 12 0 [0] 0x1
+writefield 13 0 [0] 0x1
+poll 5 0 [31] 0x0 100
+poll 8 0 [31] 0x0 100
+write 4 2 0x0
+write 4 5 0x0
+write 5 0 0x2
+poll 5 0 [1] 0x0 100
+write 5 0 0x40000000
+poll 5 0 [30] 0x0 100
+writefield 0 4 [0] 0x0
+write 8 0 0x2
+poll 8 0 [1] 0x0 100
+write 8 0 0x40000000
+poll 8 0 [30] 0x0 100
+writefield 0 4 [3] 0x0
+write 12 0 0x2
+poll 12 0 [1] 0x0 100
+write 12 0 0x40000000
+poll 12 0 [30] 0x0 100
+writefield 0 4 [7] 0x0
+write 13 0 0x2
+poll 13 0 [1] 0x0 100
+write 13 0 0x40000000
+poll 13 0 [30] 0x0 100
+writefield 0 4 [8] 0x0
+;; End Epoch 227
+;; Start Epoch 228
+label 0xe4
+writefield 0 4 [3] 0x1
+write 8 0 0x880100
+write 8 2 0x3432b000
+write 8 3 0x280
+write 8 6 0x500
+write 8 8 0x0
+write 8 7 0x0
+write 8 12 0x6
+write 8 12 0x7
+write 8 14 0x3433dc3f
+write 8 13 0x3c
+write 8 9 0x24
+write 8 5 0x0
+write 8 18 0x0
+write 8 10 0x100000
+write 8 17 0x0
+writefield 0 4 [5] 0x1
+write 10 0 0x880008
+write 10 2 0x342e0000
+write 10 3 0x140010
+write 10 4 0x500002
+write 10 6 0x4
+write 10 8 0x6400
+write 10 7 0x14
+write 10 12 0x6
+write 10 12 0x7
+write 10 14 0x342f2c3f
+write 10 13 0x3c
+write 10 9 0x24
+write 10 5 0x500
+write 10 18 0x0
+write 10 10 0x100000
+write 10 17 0x0
+write 4 0 0x2
+poll 4 0 [1] 0x0 100
+write 4 0 0x40000000
+poll 4 0 [30] 0x0 100
+write 4 0 0x1
+write 4 7 0x7
+writefield 10 0 [0] 0x1
+writefield 8 0 [0] 0x1
+poll 10 0 [31] 0x0 100
+write 4 7 0x0
+write 10 0 0x2
+poll 10 0 [1] 0x0 100
+write 10 0 0x40000000
+poll 10 0 [30] 0x0 100
+writefield 0 4 [5] 0x0
+write 8 0 0x2
+poll 8 0 [1] 0x0 100
+write 8 0 0x40000000
+poll 8 0 [30] 0x0 100
+writefield 0 4 [3] 0x0
+;; End Epoch 228
+irq 0x0
+;; End Blob '_ec_blob_weed_detection_227'

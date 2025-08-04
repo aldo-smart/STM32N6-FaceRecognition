@@ -171,7 +171,7 @@ generate_memory_pool() {
 				"fformat": "FORMAT_RAW",
 				"prop":	  { "rights": "ACC_WRITE", "throughput": "MID", "latency": "HIGH", "byteWidth": 2, "freqRatio": 5.00, "cacheable": "CACHEABLE_ON","read_power": 380, "write_power": 340.0, "constants_preferred": "true" },
 				"offset": { "value": "0x90000000", "magnitude":  "BYTES" },
-				"size":   { "value": "16",         "magnitude": "MBYTES" }
+				"size":   { "value": "32",         "magnitude": "MBYTES" }
 			},
 			{
 				"fname": "xSPI2",

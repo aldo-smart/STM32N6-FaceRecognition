@@ -228,7 +228,7 @@
      "magnitude": "MBYTES"
     },
     "size": {
-     "value": "16",
+     "value": "32",
      "magnitude": "MBYTES"
     },
     "mode": "USEMODE_ABSOLUTE",
