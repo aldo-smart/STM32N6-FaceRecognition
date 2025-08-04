@@ -25,7 +25,7 @@
 LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(weed_detection) // Defines NN_Instance_weed_detection and NN_Interface_weed_detection with network.c info
 
 AI_ALIGNED(32)
-static ai_u8 activations_1[409600];
+static ai_u8 activations_1[442368];
 AI_ALIGNED(32)
 static ai_u8 activations_2[458752];
 AI_ALIGNED(32)
@@ -56,7 +56,7 @@ static ai_u8 weights_6[0];
 AI_ALIGNED(32)
 static ai_u8 weights_7[0];
 AI_ALIGNED(32)
-static ai_u8 weights_8[7499812];
+static ai_u8 weights_8[2178849];
 
 /* 
  * Example of system initialization function

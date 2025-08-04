@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    weed_detection.h
   * @author  STEdgeAI
-  * @date    2025-08-04 13:45:14
+  * @date    2025-08-04 17:22:37
   * @brief   Minimal description of the generated c-implemention of the network
   ******************************************************************************
   * @attention
@@ -20,7 +20,7 @@
 
 /******************************************************************************/
 #define LL_ATON_WEED_DETECTION_C_MODEL_NAME        "weed_detection"
-#define LL_ATON_WEED_DETECTION_ORIGIN_MODEL_NAME   "YOLOV5_WEEDS_STM_640"
+#define LL_ATON_WEED_DETECTION_ORIGIN_MODEL_NAME   "WEEDSTM640int8qdq"
 
 /************************** USER ALLOCATED IOs ********************************/
 // No user allocated inputs
@@ -28,13 +28,13 @@
 
 /************************** INPUTS ********************************************/
 #define LL_ATON_WEED_DETECTION_IN_NUM        (1)    // Total number of input buffers
-// Input buffer 1 -- Input_12_out_0
+// Input buffer 1 -- Input_4_out_0
 #define LL_ATON_WEED_DETECTION_IN_1_ALIGNMENT   (32)
 #define LL_ATON_WEED_DETECTION_IN_1_SIZE_BYTES  (4915200)
 
 /************************** OUTPUTS *******************************************/
 #define LL_ATON_WEED_DETECTION_OUT_NUM        (1)    // Total number of output buffers
-// Output buffer 1 -- Concat_254_out_0
+// Output buffer 1 -- Concat_516_out_0
 #define LL_ATON_WEED_DETECTION_OUT_1_ALIGNMENT   (32)
 #define LL_ATON_WEED_DETECTION_OUT_1_SIZE_BYTES  (1612800)
 

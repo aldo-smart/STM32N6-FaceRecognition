@@ -65,7 +65,7 @@
     },
     "weed_detection": {
       "name": "weed_detection",
-      "filename": "YOLOV5_WEEDS_STM_640_INT8.onnx",
+      "filename": "WEED-STM-640-int8-qdq.onnx",
       "address": "0x90000000",
       "target": "stm32n6",
       "input_data_type": "float32",

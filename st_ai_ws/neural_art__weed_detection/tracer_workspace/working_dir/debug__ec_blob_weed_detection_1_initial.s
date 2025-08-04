@@ -3,14 +3,14 @@
 label 0x1
 writefield 0 4 [6] 0x1
 write 11 0 0x880100
-write 11 2 0x90727030
+write 11 2 0x90213f30
 write 11 3 0xc8000
 write 11 6 0x190000
 write 11 8 0x0
 write 11 7 0x0
 write 11 12 0x6
 write 11 12 0x7
-write 11 14 0x90bd706f
+write 11 14 0x906c3f6f
 write 11 13 0x3
 write 11 9 0x24
 write 11 5 0x0
@@ -19,7 +19,7 @@ write 11 10 0x100000
 write 11 17 0x0
 writefield 0 4 [4] 0x1
 write 9 0 0x880008
-write 9 2 0x90d67030
+write 9 2 0x906c3f30
 write 9 3 0x2800280
 write 9 4 0xc0002
 write 9 6 0x4
@@ -27,7 +27,7 @@ write 9 8 0x4b0000
 write 9 7 0x3
 write 9 12 0x6
 write 9 12 0x7
-write 9 14 0x9121706f
+write 9 14 0x90b73f6f
 write 9 13 0x3
 write 9 9 0x24
 write 9 5 0x1e00
