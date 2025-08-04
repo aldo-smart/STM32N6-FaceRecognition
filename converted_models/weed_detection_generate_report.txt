@@ -1,6 +1,6 @@
 ST Edge AI Core v2.2.0-20266 2adc00962
-Created date          : 2025-08-04 17:22:47
-Parameters            : generate --name weed_detection --model input_models\WEED-STM-640-int8-qdq.onnx --target stm32n6 --st-neural-art weed_detection@D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\temp\weed_detection_config.json --input-data-type float32 --output D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\converted_models
+Created date          : 2025-08-04 17:45:40
+Parameters            : generate --name weed_detection --model input_models\WEED-STM-640-int8-qdq.onnx --target stm32n6 --st-neural-art weed_detection@D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\temp\weed_detection_config.json --input-data-type int8 --output D:\SMART_SENSING\git\tests\STM32N6-FaceRecognition\converted_models
 
 Model name - WEEDSTM640int8qdq
 ------ --------------------------------------------------- ------------------------------------------------------------------------ ------------------- ------------- -------------------------------- 
@@ -1079,438 +1079,436 @@ Used memory ranges
 	npuRAM4    [0x34270000 - 0x342E0000]: 0x34270000-0x342E0000
 	npuRAM5    [0x342E0000 - 0x34350000]: 0x342E0000-0x34350000
 	npuRAM6    [0x34350000 - 0x343C0000]: 0x34350000-0x343BC000
-	hyperRAM   [0x90000000 - 0x92000000]: 0x90000000-0x914D3F30
+	hyperRAM   [0x90000000 - 0x92000000]: 0x90000000-0x914D3F10
 ====================================================================================
 
 Epochs details
 ------------------------------------------------------------------------------------
-Total number of epochs: 426 of which 341 implemented in software
+Total number of epochs: 424 of which 340 implemented in software
 ---
 epoch ID   HW/SW/EC Operation (SW only)
 epoch 1       EC    
-epoch 2      -SW-   (   QuantizeLinear   )
-epoch 3       EC    
-epoch 4       EC    
+epoch 2       EC    
+epoch 3      -SW-   (  DequantizeLinear  )
+epoch 4      -SW-   (      Sigmoid       )
 epoch 5      -SW-   (  DequantizeLinear  )
-epoch 6      -SW-   (      Sigmoid       )
-epoch 7      -SW-   (  DequantizeLinear  )
-epoch 8      -SW-   (        Mul         )
-epoch 9      -SW-   (   QuantizeLinear   )
-epoch 10      EC    
+epoch 6      -SW-   (        Mul         )
+epoch 7      -SW-   (   QuantizeLinear   )
+epoch 8       EC    
+epoch 9      -SW-   (  DequantizeLinear  )
+epoch 10     -SW-   (      Sigmoid       )
 epoch 11     -SW-   (  DequantizeLinear  )
-epoch 12     -SW-   (      Sigmoid       )
-epoch 13     -SW-   (  DequantizeLinear  )
-epoch 14     -SW-   (        Mul         )
-epoch 15     -SW-   (   QuantizeLinear   )
-epoch 16      EC    
+epoch 12     -SW-   (        Mul         )
+epoch 13     -SW-   (   QuantizeLinear   )
+epoch 14      EC    
+epoch 15     -SW-   (  DequantizeLinear  )
+epoch 16     -SW-   (      Sigmoid       )
 epoch 17     -SW-   (  DequantizeLinear  )
-epoch 18     -SW-   (      Sigmoid       )
-epoch 19     -SW-   (  DequantizeLinear  )
-epoch 20     -SW-   (        Mul         )
-epoch 21     -SW-   (   QuantizeLinear   )
-epoch 22     -SW-   (   QuantizeLinear   )
-epoch 23      EC    
+epoch 18     -SW-   (        Mul         )
+epoch 19     -SW-   (   QuantizeLinear   )
+epoch 20     -SW-   (   QuantizeLinear   )
+epoch 21      EC    
+epoch 22     -SW-   (  DequantizeLinear  )
+epoch 23     -SW-   (      Sigmoid       )
 epoch 24     -SW-   (  DequantizeLinear  )
-epoch 25     -SW-   (      Sigmoid       )
-epoch 26     -SW-   (  DequantizeLinear  )
-epoch 27     -SW-   (        Mul         )
-epoch 28     -SW-   (   QuantizeLinear   )
-epoch 29      EC    
+epoch 25     -SW-   (        Mul         )
+epoch 26     -SW-   (   QuantizeLinear   )
+epoch 27      EC    
+epoch 28     -SW-   (  DequantizeLinear  )
+epoch 29     -SW-   (      Sigmoid       )
 epoch 30     -SW-   (  DequantizeLinear  )
-epoch 31     -SW-   (      Sigmoid       )
-epoch 32     -SW-   (  DequantizeLinear  )
-epoch 33     -SW-   (        Mul         )
-epoch 34     -SW-   (        Add         )
-epoch 35     -SW-   (   QuantizeLinear   )
+epoch 31     -SW-   (        Mul         )
+epoch 32     -SW-   (        Add         )
+epoch 33     -SW-   (   QuantizeLinear   )
+epoch 34     -SW-   (  DequantizeLinear  )
+epoch 35     -SW-   (      Sigmoid       )
 epoch 36     -SW-   (  DequantizeLinear  )
-epoch 37     -SW-   (      Sigmoid       )
-epoch 38     -SW-   (  DequantizeLinear  )
-epoch 39     -SW-   (        Mul         )
-epoch 40     -SW-   (   QuantizeLinear   )
-epoch 41      EC    
-epoch 42      EC    
+epoch 37     -SW-   (        Mul         )
+epoch 38     -SW-   (   QuantizeLinear   )
+epoch 39      EC    
+epoch 40      EC    
+epoch 41     -SW-   (  DequantizeLinear  )
+epoch 42     -SW-   (      Sigmoid       )
 epoch 43     -SW-   (  DequantizeLinear  )
-epoch 44     -SW-   (      Sigmoid       )
-epoch 45     -SW-   (  DequantizeLinear  )
-epoch 46     -SW-   (        Mul         )
-epoch 47     -SW-   (   QuantizeLinear   )
-epoch 48      EC    
+epoch 44     -SW-   (        Mul         )
+epoch 45     -SW-   (   QuantizeLinear   )
+epoch 46      EC    
+epoch 47     -SW-   (  DequantizeLinear  )
+epoch 48     -SW-   (      Sigmoid       )
 epoch 49     -SW-   (  DequantizeLinear  )
-epoch 50     -SW-   (      Sigmoid       )
-epoch 51     -SW-   (  DequantizeLinear  )
-epoch 52     -SW-   (        Mul         )
-epoch 53     -SW-   (   QuantizeLinear   )
-epoch 54      EC    
+epoch 50     -SW-   (        Mul         )
+epoch 51     -SW-   (   QuantizeLinear   )
+epoch 52      EC    
+epoch 53     -SW-   (  DequantizeLinear  )
+epoch 54     -SW-   (      Sigmoid       )
 epoch 55     -SW-   (  DequantizeLinear  )
-epoch 56     -SW-   (      Sigmoid       )
-epoch 57     -SW-   (  DequantizeLinear  )
-epoch 58     -SW-   (        Mul         )
-epoch 59     -SW-   (   QuantizeLinear   )
-epoch 60      EC    
+epoch 56     -SW-   (        Mul         )
+epoch 57     -SW-   (   QuantizeLinear   )
+epoch 58      EC    
+epoch 59     -SW-   (  DequantizeLinear  )
+epoch 60     -SW-   (      Sigmoid       )
 epoch 61     -SW-   (  DequantizeLinear  )
-epoch 62     -SW-   (      Sigmoid       )
-epoch 63     -SW-   (  DequantizeLinear  )
-epoch 64     -SW-   (        Mul         )
-epoch 65     -SW-   (   QuantizeLinear   )
-epoch 66      EC    
+epoch 62     -SW-   (        Mul         )
+epoch 63     -SW-   (   QuantizeLinear   )
+epoch 64      EC    
+epoch 65     -SW-   (  DequantizeLinear  )
+epoch 66     -SW-   (      Sigmoid       )
 epoch 67     -SW-   (  DequantizeLinear  )
-epoch 68     -SW-   (      Sigmoid       )
-epoch 69     -SW-   (  DequantizeLinear  )
-epoch 70     -SW-   (        Mul         )
-epoch 71     -SW-   (        Add         )
-epoch 72     -SW-   (   QuantizeLinear   )
-epoch 73      EC    
+epoch 68     -SW-   (        Mul         )
+epoch 69     -SW-   (        Add         )
+epoch 70     -SW-   (   QuantizeLinear   )
+epoch 71      EC    
+epoch 72     -SW-   (  DequantizeLinear  )
+epoch 73     -SW-   (      Sigmoid       )
 epoch 74     -SW-   (  DequantizeLinear  )
-epoch 75     -SW-   (      Sigmoid       )
-epoch 76     -SW-   (  DequantizeLinear  )
-epoch 77     -SW-   (        Mul         )
-epoch 78     -SW-   (   QuantizeLinear   )
-epoch 79      EC    
+epoch 75     -SW-   (        Mul         )
+epoch 76     -SW-   (   QuantizeLinear   )
+epoch 77      EC    
+epoch 78     -SW-   (  DequantizeLinear  )
+epoch 79     -SW-   (      Sigmoid       )
 epoch 80     -SW-   (  DequantizeLinear  )
-epoch 81     -SW-   (      Sigmoid       )
-epoch 82     -SW-   (  DequantizeLinear  )
-epoch 83     -SW-   (        Mul         )
-epoch 84     -SW-   (        Add         )
-epoch 85     -SW-   (   QuantizeLinear   )
-epoch 86     -SW-   (   QuantizeLinear   )
-epoch 87      EC    
+epoch 81     -SW-   (        Mul         )
+epoch 82     -SW-   (        Add         )
+epoch 83     -SW-   (   QuantizeLinear   )
+epoch 84     -SW-   (   QuantizeLinear   )
+epoch 85      EC    
+epoch 86     -SW-   (  DequantizeLinear  )
+epoch 87     -SW-   (      Sigmoid       )
 epoch 88     -SW-   (  DequantizeLinear  )
-epoch 89     -SW-   (      Sigmoid       )
-epoch 90     -SW-   (  DequantizeLinear  )
-epoch 91     -SW-   (        Mul         )
-epoch 92     -SW-   (   QuantizeLinear   )
-epoch 93      EC    
-epoch 94      EC    
+epoch 89     -SW-   (        Mul         )
+epoch 90     -SW-   (   QuantizeLinear   )
+epoch 91      EC    
+epoch 92      EC    
+epoch 93     -SW-   (  DequantizeLinear  )
+epoch 94     -SW-   (      Sigmoid       )
 epoch 95     -SW-   (  DequantizeLinear  )
-epoch 96     -SW-   (      Sigmoid       )
-epoch 97     -SW-   (  DequantizeLinear  )
-epoch 98     -SW-   (        Mul         )
-epoch 99     -SW-   (   QuantizeLinear   )
-epoch 100     EC    
+epoch 96     -SW-   (        Mul         )
+epoch 97     -SW-   (   QuantizeLinear   )
+epoch 98      EC    
+epoch 99     -SW-   (  DequantizeLinear  )
+epoch 100    -SW-   (      Sigmoid       )
 epoch 101    -SW-   (  DequantizeLinear  )
-epoch 102    -SW-   (      Sigmoid       )
-epoch 103    -SW-   (  DequantizeLinear  )
-epoch 104    -SW-   (        Mul         )
-epoch 105    -SW-   (   QuantizeLinear   )
-epoch 106     EC    
+epoch 102    -SW-   (        Mul         )
+epoch 103    -SW-   (   QuantizeLinear   )
+epoch 104     EC    
+epoch 105    -SW-   (  DequantizeLinear  )
+epoch 106    -SW-   (      Sigmoid       )
 epoch 107    -SW-   (  DequantizeLinear  )
-epoch 108    -SW-   (      Sigmoid       )
-epoch 109    -SW-   (  DequantizeLinear  )
-epoch 110    -SW-   (        Mul         )
-epoch 111    -SW-   (   QuantizeLinear   )
-epoch 112     EC    
+epoch 108    -SW-   (        Mul         )
+epoch 109    -SW-   (   QuantizeLinear   )
+epoch 110     EC    
+epoch 111    -SW-   (  DequantizeLinear  )
+epoch 112    -SW-   (      Sigmoid       )
 epoch 113    -SW-   (  DequantizeLinear  )
-epoch 114    -SW-   (      Sigmoid       )
-epoch 115    -SW-   (  DequantizeLinear  )
-epoch 116    -SW-   (        Mul         )
-epoch 117    -SW-   (   QuantizeLinear   )
-epoch 118     EC    
+epoch 114    -SW-   (        Mul         )
+epoch 115    -SW-   (   QuantizeLinear   )
+epoch 116     EC    
+epoch 117    -SW-   (  DequantizeLinear  )
+epoch 118    -SW-   (      Sigmoid       )
 epoch 119    -SW-   (  DequantizeLinear  )
-epoch 120    -SW-   (      Sigmoid       )
-epoch 121    -SW-   (  DequantizeLinear  )
-epoch 122    -SW-   (        Mul         )
-epoch 123    -SW-   (        Add         )
-epoch 124    -SW-   (   QuantizeLinear   )
-epoch 125     EC    
+epoch 120    -SW-   (        Mul         )
+epoch 121    -SW-   (        Add         )
+epoch 122    -SW-   (   QuantizeLinear   )
+epoch 123     EC    
+epoch 124    -SW-   (  DequantizeLinear  )
+epoch 125    -SW-   (      Sigmoid       )
 epoch 126    -SW-   (  DequantizeLinear  )
-epoch 127    -SW-   (      Sigmoid       )
-epoch 128    -SW-   (  DequantizeLinear  )
-epoch 129    -SW-   (        Mul         )
-epoch 130    -SW-   (   QuantizeLinear   )
-epoch 131     EC    
+epoch 127    -SW-   (        Mul         )
+epoch 128    -SW-   (   QuantizeLinear   )
+epoch 129     EC    
+epoch 130    -SW-   (  DequantizeLinear  )
+epoch 131    -SW-   (      Sigmoid       )
 epoch 132    -SW-   (  DequantizeLinear  )
-epoch 133    -SW-   (      Sigmoid       )
-epoch 134    -SW-   (  DequantizeLinear  )
-epoch 135    -SW-   (        Mul         )
-epoch 136    -SW-   (        Add         )
-epoch 137    -SW-   (   QuantizeLinear   )
-epoch 138     EC    
+epoch 133    -SW-   (        Mul         )
+epoch 134    -SW-   (        Add         )
+epoch 135    -SW-   (   QuantizeLinear   )
+epoch 136     EC    
+epoch 137    -SW-   (  DequantizeLinear  )
+epoch 138    -SW-   (      Sigmoid       )
 epoch 139    -SW-   (  DequantizeLinear  )
-epoch 140    -SW-   (      Sigmoid       )
-epoch 141    -SW-   (  DequantizeLinear  )
-epoch 142    -SW-   (        Mul         )
-epoch 143    -SW-   (   QuantizeLinear   )
-epoch 144     EC    
+epoch 140    -SW-   (        Mul         )
+epoch 141    -SW-   (   QuantizeLinear   )
+epoch 142     EC    
+epoch 143    -SW-   (  DequantizeLinear  )
+epoch 144    -SW-   (      Sigmoid       )
 epoch 145    -SW-   (  DequantizeLinear  )
-epoch 146    -SW-   (      Sigmoid       )
-epoch 147    -SW-   (  DequantizeLinear  )
-epoch 148    -SW-   (        Mul         )
-epoch 149    -SW-   (        Add         )
-epoch 150    -SW-   (   QuantizeLinear   )
-epoch 151    -SW-   (   QuantizeLinear   )
-epoch 152     EC    
+epoch 146    -SW-   (        Mul         )
+epoch 147    -SW-   (        Add         )
+epoch 148    -SW-   (   QuantizeLinear   )
+epoch 149    -SW-   (   QuantizeLinear   )
+epoch 150     EC    
+epoch 151    -SW-   (  DequantizeLinear  )
+epoch 152    -SW-   (      Sigmoid       )
 epoch 153    -SW-   (  DequantizeLinear  )
-epoch 154    -SW-   (      Sigmoid       )
-epoch 155    -SW-   (  DequantizeLinear  )
-epoch 156    -SW-   (        Mul         )
-epoch 157    -SW-   (   QuantizeLinear   )
-epoch 158    -SW-   (   QuantizeLinear   )
-epoch 159     EC    
-epoch 160     EC    
+epoch 154    -SW-   (        Mul         )
+epoch 155    -SW-   (   QuantizeLinear   )
+epoch 156    -SW-   (   QuantizeLinear   )
+epoch 157     EC    
+epoch 158     EC    
+epoch 159    -SW-   (  DequantizeLinear  )
+epoch 160    -SW-   (      Sigmoid       )
 epoch 161    -SW-   (  DequantizeLinear  )
-epoch 162    -SW-   (      Sigmoid       )
-epoch 163    -SW-   (  DequantizeLinear  )
-epoch 164    -SW-   (        Mul         )
-epoch 165    -SW-   (   QuantizeLinear   )
-epoch 166     EC    
+epoch 162    -SW-   (        Mul         )
+epoch 163    -SW-   (   QuantizeLinear   )
+epoch 164     EC    
+epoch 165    -SW-   (  DequantizeLinear  )
+epoch 166    -SW-   (      Sigmoid       )
 epoch 167    -SW-   (  DequantizeLinear  )
-epoch 168    -SW-   (      Sigmoid       )
-epoch 169    -SW-   (  DequantizeLinear  )
-epoch 170    -SW-   (        Mul         )
-epoch 171    -SW-   (   QuantizeLinear   )
-epoch 172     EC    
+epoch 168    -SW-   (        Mul         )
+epoch 169    -SW-   (   QuantizeLinear   )
+epoch 170     EC    
+epoch 171    -SW-   (  DequantizeLinear  )
+epoch 172    -SW-   (      Sigmoid       )
 epoch 173    -SW-   (  DequantizeLinear  )
-epoch 174    -SW-   (      Sigmoid       )
-epoch 175    -SW-   (  DequantizeLinear  )
-epoch 176    -SW-   (        Mul         )
-epoch 177    -SW-   (   QuantizeLinear   )
-epoch 178     EC    
+epoch 174    -SW-   (        Mul         )
+epoch 175    -SW-   (   QuantizeLinear   )
+epoch 176     EC    
+epoch 177    -SW-   (  DequantizeLinear  )
+epoch 178    -SW-   (      Sigmoid       )
 epoch 179    -SW-   (  DequantizeLinear  )
-epoch 180    -SW-   (      Sigmoid       )
-epoch 181    -SW-   (  DequantizeLinear  )
-epoch 182    -SW-   (        Mul         )
-epoch 183    -SW-   (   QuantizeLinear   )
-epoch 184     EC    
+epoch 180    -SW-   (        Mul         )
+epoch 181    -SW-   (   QuantizeLinear   )
+epoch 182     EC    
+epoch 183    -SW-   (  DequantizeLinear  )
+epoch 184    -SW-   (      Sigmoid       )
 epoch 185    -SW-   (  DequantizeLinear  )
-epoch 186    -SW-   (      Sigmoid       )
-epoch 187    -SW-   (  DequantizeLinear  )
-epoch 188    -SW-   (        Mul         )
-epoch 189    -SW-   (        Add         )
-epoch 190    -SW-   (   QuantizeLinear   )
-epoch 191    -SW-   (   QuantizeLinear   )
-epoch 192     EC    
+epoch 186    -SW-   (        Mul         )
+epoch 187    -SW-   (        Add         )
+epoch 188    -SW-   (   QuantizeLinear   )
+epoch 189    -SW-   (   QuantizeLinear   )
+epoch 190     EC    
+epoch 191    -SW-   (  DequantizeLinear  )
+epoch 192    -SW-   (      Sigmoid       )
 epoch 193    -SW-   (  DequantizeLinear  )
-epoch 194    -SW-   (      Sigmoid       )
-epoch 195    -SW-   (  DequantizeLinear  )
-epoch 196    -SW-   (        Mul         )
-epoch 197    -SW-   (   QuantizeLinear   )
-epoch 198    -SW-   (   QuantizeLinear   )
-epoch 199     EC    
-epoch 200     EC    
+epoch 194    -SW-   (        Mul         )
+epoch 195    -SW-   (   QuantizeLinear   )
+epoch 196    -SW-   (   QuantizeLinear   )
+epoch 197     EC    
+epoch 198     EC    
+epoch 199    -SW-   (  DequantizeLinear  )
+epoch 200    -SW-   (      Sigmoid       )
 epoch 201    -SW-   (  DequantizeLinear  )
-epoch 202    -SW-   (      Sigmoid       )
-epoch 203    -SW-   (  DequantizeLinear  )
-epoch 204    -SW-   (        Mul         )
-epoch 205    -SW-   (   QuantizeLinear   )
-epoch 206     EC    
+epoch 202    -SW-   (        Mul         )
+epoch 203    -SW-   (   QuantizeLinear   )
+epoch 204     EC    
+epoch 205    -SW-   (  DequantizeLinear  )
+epoch 206    -SW-   (      Sigmoid       )
 epoch 207    -SW-   (  DequantizeLinear  )
-epoch 208    -SW-   (      Sigmoid       )
-epoch 209    -SW-   (  DequantizeLinear  )
-epoch 210    -SW-   (        Mul         )
-epoch 211    -SW-   (        Pad         )
-epoch 212    -SW-   (      MaxPool       )
-epoch 213    -SW-   (      MaxPool       )
+epoch 208    -SW-   (        Mul         )
+epoch 209    -SW-   (        Pad         )
+epoch 210    -SW-   (      MaxPool       )
+epoch 211    -SW-   (      MaxPool       )
+epoch 212    -SW-   (   QuantizeLinear   )
+epoch 213    -SW-   (   QuantizeLinear   )
 epoch 214    -SW-   (   QuantizeLinear   )
-epoch 215    -SW-   (   QuantizeLinear   )
-epoch 216    -SW-   (   QuantizeLinear   )
+epoch 215     EC    
+epoch 216     EC    
 epoch 217     EC    
 epoch 218     EC    
-epoch 219     EC    
-epoch 220     EC    
+epoch 219    -SW-   (  DequantizeLinear  )
+epoch 220    -SW-   (      Sigmoid       )
 epoch 221    -SW-   (  DequantizeLinear  )
-epoch 222    -SW-   (      Sigmoid       )
-epoch 223    -SW-   (  DequantizeLinear  )
-epoch 224    -SW-   (        Mul         )
-epoch 225    -SW-   (   QuantizeLinear   )
-epoch 226     EC    
+epoch 222    -SW-   (        Mul         )
+epoch 223    -SW-   (   QuantizeLinear   )
+epoch 224     EC    
+epoch 225    -SW-   (  DequantizeLinear  )
+epoch 226    -SW-   (      Sigmoid       )
 epoch 227    -SW-   (  DequantizeLinear  )
-epoch 228    -SW-   (      Sigmoid       )
-epoch 229    -SW-   (  DequantizeLinear  )
-epoch 230    -SW-   (        Mul         )
-epoch 231    -SW-   (   QuantizeLinear   )
-epoch 232     EC    
-epoch 233    -SW-   (    DepthToSpace    )
-epoch 234    -SW-   (   QuantizeLinear   )
+epoch 228    -SW-   (        Mul         )
+epoch 229    -SW-   (   QuantizeLinear   )
+epoch 230     EC    
+epoch 231    -SW-   (    DepthToSpace    )
+epoch 232    -SW-   (   QuantizeLinear   )
+epoch 233     EC    
+epoch 234     EC    
 epoch 235     EC    
 epoch 236     EC    
-epoch 237     EC    
-epoch 238     EC    
+epoch 237    -SW-   (  DequantizeLinear  )
+epoch 238    -SW-   (      Sigmoid       )
 epoch 239    -SW-   (  DequantizeLinear  )
-epoch 240    -SW-   (      Sigmoid       )
-epoch 241    -SW-   (  DequantizeLinear  )
-epoch 242    -SW-   (        Mul         )
-epoch 243    -SW-   (   QuantizeLinear   )
+epoch 240    -SW-   (        Mul         )
+epoch 241    -SW-   (   QuantizeLinear   )
+epoch 242    -SW-   (  DequantizeLinear  )
+epoch 243    -SW-   (      Sigmoid       )
 epoch 244    -SW-   (  DequantizeLinear  )
-epoch 245    -SW-   (      Sigmoid       )
-epoch 246    -SW-   (  DequantizeLinear  )
-epoch 247    -SW-   (        Mul         )
-epoch 248    -SW-   (   QuantizeLinear   )
-epoch 249     EC    
+epoch 245    -SW-   (        Mul         )
+epoch 246    -SW-   (   QuantizeLinear   )
+epoch 247     EC    
+epoch 248    -SW-   (  DequantizeLinear  )
+epoch 249    -SW-   (      Sigmoid       )
 epoch 250    -SW-   (  DequantizeLinear  )
-epoch 251    -SW-   (      Sigmoid       )
-epoch 252    -SW-   (  DequantizeLinear  )
-epoch 253    -SW-   (        Mul         )
-epoch 254    -SW-   (   QuantizeLinear   )
-epoch 255     EC    
+epoch 251    -SW-   (        Mul         )
+epoch 252    -SW-   (   QuantizeLinear   )
+epoch 253     EC    
+epoch 254    -SW-   (  DequantizeLinear  )
+epoch 255    -SW-   (      Sigmoid       )
 epoch 256    -SW-   (  DequantizeLinear  )
-epoch 257    -SW-   (      Sigmoid       )
-epoch 258    -SW-   (  DequantizeLinear  )
-epoch 259    -SW-   (        Mul         )
-epoch 260    -SW-   (   QuantizeLinear   )
-epoch 261     EC    
-epoch 262     EC    
+epoch 257    -SW-   (        Mul         )
+epoch 258    -SW-   (   QuantizeLinear   )
+epoch 259     EC    
+epoch 260     EC    
+epoch 261    -SW-   (  DequantizeLinear  )
+epoch 262    -SW-   (      Sigmoid       )
 epoch 263    -SW-   (  DequantizeLinear  )
-epoch 264    -SW-   (      Sigmoid       )
-epoch 265    -SW-   (  DequantizeLinear  )
-epoch 266    -SW-   (        Mul         )
-epoch 267    -SW-   (   QuantizeLinear   )
-epoch 268     EC    
+epoch 264    -SW-   (        Mul         )
+epoch 265    -SW-   (   QuantizeLinear   )
+epoch 266     EC    
+epoch 267    -SW-   (  DequantizeLinear  )
+epoch 268    -SW-   (      Sigmoid       )
 epoch 269    -SW-   (  DequantizeLinear  )
-epoch 270    -SW-   (      Sigmoid       )
-epoch 271    -SW-   (  DequantizeLinear  )
-epoch 272    -SW-   (        Mul         )
-epoch 273    -SW-   (   QuantizeLinear   )
-epoch 274     EC    
-epoch 275    -SW-   (    DepthToSpace    )
-epoch 276    -SW-   (   QuantizeLinear   )
+epoch 270    -SW-   (        Mul         )
+epoch 271    -SW-   (   QuantizeLinear   )
+epoch 272     EC    
+epoch 273    -SW-   (    DepthToSpace    )
+epoch 274    -SW-   (   QuantizeLinear   )
+epoch 275     EC    
+epoch 276     EC    
 epoch 277     EC    
 epoch 278     EC    
-epoch 279     EC    
-epoch 280     EC    
+epoch 279    -SW-   (  DequantizeLinear  )
+epoch 280    -SW-   (      Sigmoid       )
 epoch 281    -SW-   (  DequantizeLinear  )
-epoch 282    -SW-   (      Sigmoid       )
-epoch 283    -SW-   (  DequantizeLinear  )
-epoch 284    -SW-   (        Mul         )
-epoch 285    -SW-   (   QuantizeLinear   )
+epoch 282    -SW-   (        Mul         )
+epoch 283    -SW-   (   QuantizeLinear   )
+epoch 284    -SW-   (  DequantizeLinear  )
+epoch 285    -SW-   (      Sigmoid       )
 epoch 286    -SW-   (  DequantizeLinear  )
-epoch 287    -SW-   (      Sigmoid       )
-epoch 288    -SW-   (  DequantizeLinear  )
-epoch 289    -SW-   (        Mul         )
-epoch 290    -SW-   (   QuantizeLinear   )
-epoch 291     EC    
+epoch 287    -SW-   (        Mul         )
+epoch 288    -SW-   (   QuantizeLinear   )
+epoch 289     EC    
+epoch 290    -SW-   (  DequantizeLinear  )
+epoch 291    -SW-   (      Sigmoid       )
 epoch 292    -SW-   (  DequantizeLinear  )
-epoch 293    -SW-   (      Sigmoid       )
-epoch 294    -SW-   (  DequantizeLinear  )
-epoch 295    -SW-   (        Mul         )
-epoch 296    -SW-   (   QuantizeLinear   )
-epoch 297     EC    
+epoch 293    -SW-   (        Mul         )
+epoch 294    -SW-   (   QuantizeLinear   )
+epoch 295     EC    
+epoch 296    -SW-   (  DequantizeLinear  )
+epoch 297    -SW-   (      Sigmoid       )
 epoch 298    -SW-   (  DequantizeLinear  )
-epoch 299    -SW-   (      Sigmoid       )
-epoch 300    -SW-   (  DequantizeLinear  )
-epoch 301    -SW-   (        Mul         )
-epoch 302    -SW-   (   QuantizeLinear   )
-epoch 303     EC    
-epoch 304     EC    
+epoch 299    -SW-   (        Mul         )
+epoch 300    -SW-   (   QuantizeLinear   )
+epoch 301     EC    
+epoch 302     EC    
+epoch 303    -SW-   (  DequantizeLinear  )
+epoch 304    -SW-   (      Sigmoid       )
 epoch 305    -SW-   (  DequantizeLinear  )
-epoch 306    -SW-   (      Sigmoid       )
-epoch 307    -SW-   (  DequantizeLinear  )
-epoch 308    -SW-   (        Mul         )
+epoch 306    -SW-   (        Mul         )
+epoch 307    -SW-   (   QuantizeLinear   )
+epoch 308     EC    
 epoch 309    -SW-   (   QuantizeLinear   )
 epoch 310     EC    
-epoch 311    -SW-   (   QuantizeLinear   )
-epoch 312     EC    
+epoch 311    -SW-   (  DequantizeLinear  )
+epoch 312    -SW-   (      Sigmoid       )
 epoch 313    -SW-   (  DequantizeLinear  )
-epoch 314    -SW-   (      Sigmoid       )
-epoch 315    -SW-   (  DequantizeLinear  )
-epoch 316    -SW-   (        Mul         )
-epoch 317    -SW-   (   QuantizeLinear   )
-epoch 318     EC    
-epoch 319     EC    
-epoch 320    -SW-   (  DequantizeLinear  )
-epoch 321    -SW-   (      Sigmoid       )
-epoch 322    -SW-   (       Split        )
+epoch 314    -SW-   (        Mul         )
+epoch 315    -SW-   (   QuantizeLinear   )
+epoch 316     EC    
+epoch 317     EC    
+epoch 318    -SW-   (  DequantizeLinear  )
+epoch 319    -SW-   (      Sigmoid       )
+epoch 320    -SW-   (       Split        )
+epoch 321    -SW-   (        Mul         )
+epoch 322    -SW-   (        Pow         )
 epoch 323    -SW-   (        Mul         )
-epoch 324    -SW-   (        Pow         )
-epoch 325    -SW-   (        Mul         )
+epoch 324    -SW-   (        Mul         )
+epoch 325    -SW-   (        Add         )
 epoch 326    -SW-   (        Mul         )
-epoch 327    -SW-   (        Add         )
-epoch 328    -SW-   (        Mul         )
-epoch 329    -SW-   (       Concat       )
-epoch 330     EC    
-epoch 331     EC    
+epoch 327    -SW-   (       Concat       )
+epoch 328     EC    
+epoch 329     EC    
+epoch 330    -SW-   (  DequantizeLinear  )
+epoch 331    -SW-   (      Sigmoid       )
 epoch 332    -SW-   (  DequantizeLinear  )
-epoch 333    -SW-   (      Sigmoid       )
-epoch 334    -SW-   (  DequantizeLinear  )
-epoch 335    -SW-   (        Mul         )
-epoch 336    -SW-   (   QuantizeLinear   )
+epoch 333    -SW-   (        Mul         )
+epoch 334    -SW-   (   QuantizeLinear   )
+epoch 335    -SW-   (  DequantizeLinear  )
+epoch 336    -SW-   (      Sigmoid       )
 epoch 337    -SW-   (  DequantizeLinear  )
-epoch 338    -SW-   (      Sigmoid       )
-epoch 339    -SW-   (  DequantizeLinear  )
-epoch 340    -SW-   (        Mul         )
-epoch 341    -SW-   (   QuantizeLinear   )
-epoch 342     EC    
+epoch 338    -SW-   (        Mul         )
+epoch 339    -SW-   (   QuantizeLinear   )
+epoch 340     EC    
+epoch 341    -SW-   (  DequantizeLinear  )
+epoch 342    -SW-   (      Sigmoid       )
 epoch 343    -SW-   (  DequantizeLinear  )
-epoch 344    -SW-   (      Sigmoid       )
-epoch 345    -SW-   (  DequantizeLinear  )
-epoch 346    -SW-   (        Mul         )
-epoch 347    -SW-   (   QuantizeLinear   )
-epoch 348     EC    
+epoch 344    -SW-   (        Mul         )
+epoch 345    -SW-   (   QuantizeLinear   )
+epoch 346     EC    
+epoch 347    -SW-   (  DequantizeLinear  )
+epoch 348    -SW-   (      Sigmoid       )
 epoch 349    -SW-   (  DequantizeLinear  )
-epoch 350    -SW-   (      Sigmoid       )
-epoch 351    -SW-   (  DequantizeLinear  )
-epoch 352    -SW-   (        Mul         )
-epoch 353    -SW-   (   QuantizeLinear   )
-epoch 354     EC    
-epoch 355     EC    
+epoch 350    -SW-   (        Mul         )
+epoch 351    -SW-   (   QuantizeLinear   )
+epoch 352     EC    
+epoch 353     EC    
+epoch 354    -SW-   (  DequantizeLinear  )
+epoch 355    -SW-   (      Sigmoid       )
 epoch 356    -SW-   (  DequantizeLinear  )
-epoch 357    -SW-   (      Sigmoid       )
-epoch 358    -SW-   (  DequantizeLinear  )
-epoch 359    -SW-   (        Mul         )
+epoch 357    -SW-   (        Mul         )
+epoch 358    -SW-   (   QuantizeLinear   )
+epoch 359     EC    
 epoch 360    -SW-   (   QuantizeLinear   )
 epoch 361     EC    
-epoch 362    -SW-   (   QuantizeLinear   )
-epoch 363     EC    
+epoch 362    -SW-   (  DequantizeLinear  )
+epoch 363    -SW-   (      Sigmoid       )
 epoch 364    -SW-   (  DequantizeLinear  )
-epoch 365    -SW-   (      Sigmoid       )
-epoch 366    -SW-   (  DequantizeLinear  )
-epoch 367    -SW-   (        Mul         )
-epoch 368    -SW-   (   QuantizeLinear   )
-epoch 369     EC    
-epoch 370     EC    
-epoch 371    -SW-   (  DequantizeLinear  )
-epoch 372    -SW-   (      Sigmoid       )
-epoch 373    -SW-   (       Split        )
+epoch 365    -SW-   (        Mul         )
+epoch 366    -SW-   (   QuantizeLinear   )
+epoch 367     EC    
+epoch 368     EC    
+epoch 369    -SW-   (  DequantizeLinear  )
+epoch 370    -SW-   (      Sigmoid       )
+epoch 371    -SW-   (       Split        )
+epoch 372    -SW-   (        Mul         )
+epoch 373    -SW-   (        Pow         )
 epoch 374    -SW-   (        Mul         )
-epoch 375    -SW-   (        Pow         )
-epoch 376    -SW-   (        Mul         )
+epoch 375    -SW-   (        Mul         )
+epoch 376    -SW-   (        Add         )
 epoch 377    -SW-   (        Mul         )
-epoch 378    -SW-   (        Add         )
-epoch 379    -SW-   (        Mul         )
-epoch 380    -SW-   (       Concat       )
-epoch 381     EC    
-epoch 382     EC    
+epoch 378    -SW-   (       Concat       )
+epoch 379     EC    
+epoch 380     EC    
+epoch 381    -SW-   (  DequantizeLinear  )
+epoch 382    -SW-   (      Sigmoid       )
 epoch 383    -SW-   (  DequantizeLinear  )
-epoch 384    -SW-   (      Sigmoid       )
-epoch 385    -SW-   (  DequantizeLinear  )
-epoch 386    -SW-   (        Mul         )
-epoch 387    -SW-   (   QuantizeLinear   )
+epoch 384    -SW-   (        Mul         )
+epoch 385    -SW-   (   QuantizeLinear   )
+epoch 386    -SW-   (  DequantizeLinear  )
+epoch 387    -SW-   (      Sigmoid       )
 epoch 388    -SW-   (  DequantizeLinear  )
-epoch 389    -SW-   (      Sigmoid       )
-epoch 390    -SW-   (  DequantizeLinear  )
-epoch 391    -SW-   (        Mul         )
-epoch 392    -SW-   (   QuantizeLinear   )
-epoch 393     EC    
+epoch 389    -SW-   (        Mul         )
+epoch 390    -SW-   (   QuantizeLinear   )
+epoch 391     EC    
+epoch 392    -SW-   (  DequantizeLinear  )
+epoch 393    -SW-   (      Sigmoid       )
 epoch 394    -SW-   (  DequantizeLinear  )
-epoch 395    -SW-   (      Sigmoid       )
-epoch 396    -SW-   (  DequantizeLinear  )
-epoch 397    -SW-   (        Mul         )
-epoch 398    -SW-   (   QuantizeLinear   )
-epoch 399     EC    
+epoch 395    -SW-   (        Mul         )
+epoch 396    -SW-   (   QuantizeLinear   )
+epoch 397     EC    
+epoch 398    -SW-   (  DequantizeLinear  )
+epoch 399    -SW-   (      Sigmoid       )
 epoch 400    -SW-   (  DequantizeLinear  )
-epoch 401    -SW-   (      Sigmoid       )
-epoch 402    -SW-   (  DequantizeLinear  )
-epoch 403    -SW-   (        Mul         )
-epoch 404    -SW-   (   QuantizeLinear   )
-epoch 405     EC    
-epoch 406     EC    
+epoch 401    -SW-   (        Mul         )
+epoch 402    -SW-   (   QuantizeLinear   )
+epoch 403     EC    
+epoch 404     EC    
+epoch 405    -SW-   (  DequantizeLinear  )
+epoch 406    -SW-   (      Sigmoid       )
 epoch 407    -SW-   (  DequantizeLinear  )
-epoch 408    -SW-   (      Sigmoid       )
-epoch 409    -SW-   (  DequantizeLinear  )
-epoch 410    -SW-   (        Mul         )
-epoch 411    -SW-   (   QuantizeLinear   )
+epoch 408    -SW-   (        Mul         )
+epoch 409    -SW-   (   QuantizeLinear   )
+epoch 410     EC    
+epoch 411     EC    
 epoch 412     EC    
-epoch 413     EC    
-epoch 414     EC    
-epoch 415    -SW-   (  DequantizeLinear  )
-epoch 416    -SW-   (      Sigmoid       )
-epoch 417    -SW-   (       Split        )
+epoch 413    -SW-   (  DequantizeLinear  )
+epoch 414    -SW-   (      Sigmoid       )
+epoch 415    -SW-   (       Split        )
+epoch 416    -SW-   (        Mul         )
+epoch 417    -SW-   (        Pow         )
 epoch 418    -SW-   (        Mul         )
-epoch 419    -SW-   (        Pow         )
-epoch 420    -SW-   (        Mul         )
+epoch 419    -SW-   (        Mul         )
+epoch 420    -SW-   (        Add         )
 epoch 421    -SW-   (        Mul         )
-epoch 422    -SW-   (        Add         )
-epoch 423    -SW-   (        Mul         )
+epoch 422    -SW-   (       Concat       )
+epoch 423     EC    
 epoch 424    -SW-   (       Concat       )
-epoch 425     EC    
-epoch 426    -SW-   (       Concat       )
 ====================================================================================

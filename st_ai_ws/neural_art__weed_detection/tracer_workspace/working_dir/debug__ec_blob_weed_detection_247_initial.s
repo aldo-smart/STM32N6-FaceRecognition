@@ -1,0 +1,505 @@
+;; Start Blob '_ec_blob_weed_detection_247'
+;; Start Epoch 247
+label 0xf7
+writefield 0 4 [10] 0x1
+write 15 0 0x350
+write 15 9 0x10102
+write 15 8 0xf0020
+write 15 4 0x10b74004
+write 15 5 0x280280
+write 15 2 0x10100101
+write 15 10 0x0
+write 15 3 0x1100
+write 15 6 0x27f0000
+write 15 7 0x270000
+write 15 12 0xffff8e
+write 15 13 0x0
+writefield 0 4 [11] 0x1
+write 16 0 0x40
+write 16 8 0x1f1020
+write 16 4 0x10a34400
+write 16 5 0x280280
+write 16 2 0x10100101
+write 16 10 0x0
+write 16 3 0x1100
+write 16 6 0x27f0000
+write 16 7 0x270000
+write 16 12 0xffff8e
+write 16 13 0x0
+writefield 0 4 [20] 0x1
+write 25 0 0x8000000
+write 25 0 0x96000fc
+write 25 13 0x20422042
+write 25 2 0x60000
+write 25 7 0x1
+write 25 8 0x0
+write 25 12 0x0
+write 25 3 0x0
+write 25 4 0xf
+write 25 5 0x63ff
+write 25 6 0x18fff
+write 25 10 0x1
+write 25 9 0x70403f1
+;; Block ECASM optimizations to move reg writes pass this point
+write 25 11 0x1
+write 25 256 0x2054
+write 25 257 0x0
+write 25 258 0x205e
+write 25 259 0x0
+write 25 260 0x2c22
+write 25 261 0x0
+write 25 262 0x330f
+write 25 263 0x0
+write 25 264 0x3e1e
+write 25 265 0x0
+write 25 266 0x3f4b
+write 25 267 0x0
+write 25 268 0x177f
+write 25 269 0x0
+write 25 270 0x3d9b
+write 25 271 0x0
+write 25 272 0x2143
+write 25 273 0x0
+write 25 274 0x1ce9
+write 25 275 0x0
+write 25 276 0x1fe7
+write 25 277 0x0
+write 25 278 0x1e64
+write 25 279 0x0
+write 25 280 0x235e
+write 25 281 0x0
+write 25 282 0x1491
+write 25 283 0x0
+write 25 284 0x17a1
+write 25 285 0x0
+write 25 286 0x18a5
+write 25 287 0x0
+write 25 288 0x29b6
+write 25 289 0x0
+write 25 290 0x1b27
+write 25 291 0x0
+write 25 292 0x34e4
+write 25 293 0x0
+write 25 294 0x1bcf
+write 25 295 0x0
+write 25 296 0x16c5
+write 25 297 0x0
+write 25 298 0x18ec
+write 25 299 0x0
+write 25 300 0x3949
+write 25 301 0x0
+write 25 302 0x137b
+write 25 303 0x0
+write 25 304 0x28cb
+write 25 305 0x0
+write 25 306 0x1d4e
+write 25 307 0x0
+write 25 308 0x2555
+write 25 309 0x0
+write 25 310 0x1b64
+write 25 311 0x0
+write 25 312 0x15e9
+write 25 313 0x0
+write 25 314 0x23f7
+write 25 315 0x0
+write 25 316 0x1a79
+write 25 317 0x0
+write 25 318 0x2260
+write 25 319 0x0
+write 25 320 0x194f
+write 25 321 0x0
+write 25 322 0x279d
+write 25 323 0x0
+write 25 324 0x208c
+write 25 325 0x0
+write 25 326 0x3b2b
+write 25 327 0x0
+write 25 328 0x3258
+write 25 329 0x0
+write 25 330 0x2397
+write 25 331 0x0
+write 25 332 0x277c
+write 25 333 0x0
+write 25 334 0x26e4
+write 25 335 0x0
+write 25 336 0x16af
+write 25 337 0x0
+write 25 338 0x1eab
+write 25 339 0x0
+write 25 340 0x28d0
+write 25 341 0x0
+write 25 342 0x1cb9
+write 25 343 0x0
+write 25 344 0x298a
+write 25 345 0x0
+write 25 346 0x2013
+write 25 347 0x0
+write 25 348 0x3570
+write 25 349 0x0
+write 25 350 0x20ca
+write 25 351 0x0
+write 25 352 0x192c
+write 25 353 0x0
+write 25 354 0x1d44
+write 25 355 0x0
+write 25 356 0x476f
+write 25 357 0x0
+write 25 358 0x341f
+write 25 359 0x0
+write 25 360 0x1b0e
+write 25 361 0x0
+write 25 362 0x2ed7
+write 25 363 0x0
+write 25 364 0x1d2d
+write 25 365 0x0
+write 25 366 0x1cdc
+write 25 367 0x0
+write 25 368 0x1b34
+write 25 369 0x0
+write 25 370 0x21fe
+write 25 371 0x0
+write 25 372 0x238e
+write 25 373 0x0
+write 25 374 0xa66
+write 25 375 0x0
+write 25 376 0x2d63
+write 25 377 0x0
+write 25 378 0x5128
+write 25 379 0x0
+write 25 380 0x27dd
+write 25 381 0x0
+write 25 382 0x29a9
+write 25 383 0x0
+writefield 0 4 [21] 0x1
+write 26 0 0x8000000
+write 26 0 0x156000fc
+write 26 13 0x20422042
+write 26 2 0xa0000
+write 26 7 0x45ca
+write 26 8 0x0
+write 26 12 0x0
+write 26 3 0x0
+write 26 4 0xf
+write 26 5 0x63ff
+write 26 6 0x18fff
+write 26 10 0x1
+write 26 9 0x70403f1
+;; Block ECASM optimizations to move reg writes pass this point
+write 26 11 0x1
+write 26 256 0xffd545ca
+write 26 257 0x8974
+write 26 258 0x19e45ca
+write 26 259 0x485c
+write 26 260 0x2c45ca
+write 26 261 0x987b
+write 26 262 0x16845ca
+write 26 263 0x6d79
+write 26 264 0x1545ca
+write 26 265 0x9423
+write 26 266 0xff7445ca
+write 26 267 0xb4f2
+write 26 268 0x11f45ca
+write 26 269 0x16fc
+write 26 270 0xff45ca
+write 26 271 0x6daf
+write 26 272 0xd845ca
+write 26 273 0xe9cd
+write 26 274 0x21d45ca
+write 26 275 0x280c
+write 26 276 0x15545ca
+write 26 277 0xced3
+write 26 278 0x23d45ca
+write 26 279 0x6881
+write 26 280 0xffc945ca
+write 26 281 0x3849
+write 26 282 0x21045ca
+write 26 283 0x268d
+write 26 284 0x39045ca
+write 26 285 0x4165
+write 26 286 0x2de45ca
+write 26 287 0x6797
+write 26 288 0x1c045ca
+write 26 289 0x13bd
+write 26 290 0xff2845ca
+write 26 291 0x5b43
+write 26 292 0x20945ca
+write 26 293 0xde93
+write 26 294 0x17b45ca
+write 26 295 0x3e69
+write 26 296 0x15145ca
+write 26 297 0xd0c5
+write 26 298 0x1c445ca
+write 26 299 0x6ae
+write 26 300 0xb245ca
+write 26 301 0x1359
+write 26 302 0x16645ca
+write 26 303 0xc8a4
+write 26 304 0xffa645ca
+write 26 305 0x2b30
+write 26 306 0x20345ca
+write 26 307 0x4eeb
+write 26 308 0x29945ca
+write 26 309 0xb752
+write 26 310 0x15545ca
+write 26 311 0xefe5
+write 26 312 0x31d45ca
+write 26 313 0x7dc4
+write 26 314 0xc645ca
+write 26 315 0xb14c
+write 26 316 0x12f45ca
+write 26 317 0x8a27
+write 26 318 0xcd45ca
+write 26 319 0x778
+write 26 320 0xf445ca
+write 26 321 0xa1f0
+write 26 322 0x9345ca
+write 26 323 0xd4e6
+write 26 324 0x8945ca
+write 26 325 0x19a5
+write 26 326 0x9645ca
+write 26 327 0x5dfd
+write 26 328 0xfff945ca
+write 26 329 0x7d7
+write 26 330 0xffb845ca
+write 26 331 0xe3a8
+write 26 332 0xfeb645ca
+write 26 333 0x6370
+write 26 334 0xcf45ca
+write 26 335 0xcb8e
+write 26 336 0x17645ca
+write 26 337 0x5201
+write 26 338 0x18b45ca
+write 26 339 0x6fe6
+write 26 340 0x20a45ca
+write 26 341 0xfb3e
+write 26 342 0xe945ca
+write 26 343 0xb114
+write 26 344 0x8245ca
+write 26 345 0xe7a3
+write 26 346 0x9b45ca
+write 26 347 0x2804
+write 26 348 0x6a45ca
+write 26 349 0xd79b
+write 26 350 0x12e45ca
+write 26 351 0xe78f
+write 26 352 0x2ed45ca
+write 26 353 0xa867
+write 26 354 0x24145ca
+write 26 355 0xf921
+write 26 356 0xfff045ca
+write 26 357 0xe3e4
+write 26 358 0xb545ca
+write 26 359 0x98c5
+write 26 360 0x18745ca
+write 26 361 0xf63b
+write 26 362 0xbd45ca
+write 26 363 0xe49b
+write 26 364 0x9b45ca
+write 26 365 0xd38b
+write 26 366 0x25045ca
+write 26 367 0x74b3
+write 26 368 0x1ff45ca
+write 26 369 0x95dc
+write 26 370 0x845ca
+write 26 371 0x2612
+write 26 372 0xe745ca
+write 26 373 0x8e0a
+write 26 374 0x46a45ca
+write 26 375 0xbba0
+write 26 376 0x16445ca
+write 26 377 0xb036
+write 26 378 0xfd7045ca
+write 26 379 0xd543
+write 26 380 0x4f45ca
+write 26 381 0xda14
+write 26 382 0x13045ca
+write 26 383 0x7ca9
+writefield 0 4 [5] 0x1
+write 10 0 0x8c000
+write 10 2 0x342e0000
+write 10 3 0x280028
+write 10 4 0x400010
+write 10 6 0x20
+write 10 8 0x0
+write 10 7 0x2
+write 10 12 0x6
+write 10 12 0x7
+write 10 14 0x342f903f
+write 10 13 0x8
+write 10 9 0x24
+write 10 5 0xa00
+write 10 18 0x0
+write 10 10 0x100000
+write 10 17 0x0
+writefield 0 4 [8] 0x1
+write 13 0 0x8c184
+write 13 2 0x9020c500
+write 13 3 0x1000
+write 13 6 0x0
+write 13 8 0x0
+write 13 7 0x0
+write 13 12 0x6
+write 13 12 0x7
+write 13 14 0x9020d53f
+write 13 13 0x1
+write 13 9 0x24
+write 13 5 0x0
+write 13 18 0x8
+write 13 10 0x100000
+write 13 17 0x0
+writefield 0 4 [1] 0x1
+write 6 0 0x88c100
+write 6 2 0x34270000
+write 6 3 0x6400
+write 6 6 0x0
+write 6 8 0x0
+write 6 7 0x0
+write 6 12 0x6
+write 6 12 0x7
+write 6 14 0x3427c83f
+write 6 13 0x8
+write 6 9 0x24
+write 6 5 0x0
+write 6 18 0x0
+write 6 10 0x100000
+write 6 17 0x0
+writefield 0 4 [6] 0x1
+write 11 0 0x8c000
+write 11 2 0x342e0010
+write 11 3 0x280028
+write 11 4 0x400010
+write 11 6 0x20
+write 11 8 0x0
+write 11 7 0x2
+write 11 12 0x6
+write 11 12 0x7
+write 11 14 0x342f903f
+write 11 13 0x8
+write 11 9 0x24
+write 11 5 0xa00
+write 11 18 0x0
+write 11 10 0x100000
+write 11 17 0x0
+writefield 0 4 [9] 0x1
+write 14 0 0x880108
+write 14 2 0x34270000
+write 14 3 0x6400
+write 14 6 0x0
+write 14 8 0x0
+write 14 7 0x0
+write 14 12 0x6
+write 14 12 0x7
+write 14 14 0x3427c83f
+write 14 13 0x8
+write 14 9 0x24
+write 14 5 0x0
+write 14 18 0x0
+write 14 10 0x100000
+write 14 17 0x0
+writefield 0 4 [4] 0x1
+write 9 0 0x80008
+write 9 2 0x34200000
+write 9 3 0x280028
+write 9 4 0x400010
+write 9 6 0x10
+write 9 8 0x19000
+write 9 7 0x4
+write 9 12 0x6
+write 9 12 0x7
+write 9 14 0x3421903f
+write 9 13 0x4
+write 9 9 0x24
+write 9 5 0xa00
+write 9 18 0x0
+write 9 10 0x100000
+write 9 17 0x0
+write 4 0 0x2
+poll 4 0 [1] 0x0 100
+write 4 0 0x40000000
+poll 4 0 [30] 0x0 100
+write 4 0 0x1
+write 4 12 0xb
+write 4 13 0x11
+write 4 14 0x3
+write 4 15 0xd
+write 4 16 0x11
+write 4 17 0x15
+write 4 11 0x17
+write 4 34 0x1170116
+write 4 36 0x29
+write 4 6 0x2b
+writefield 9 0 [0] 0x1
+writefield 14 0 [0] 0x1
+write 15 0 0x351
+write 16 0 0x41
+writefield 25 0 [0] 0x1
+writefield 26 0 [0] 0x1
+writefield 6 0 [0] 0x1
+writefield 10 0 [0] 0x1
+writefield 11 0 [0] 0x1
+writefield 13 0 [0] 0x1
+poll 9 0 [31] 0x0 100
+poll 14 0 [31] 0x0 100
+write 4 12 0x0
+write 4 13 0x0
+write 4 14 0x0
+write 4 15 0x0
+write 4 16 0x0
+write 4 17 0x0
+write 4 11 0x0
+write 4 34 0x0
+write 4 36 0x0
+write 4 6 0x0
+write 9 0 0x2
+poll 9 0 [1] 0x0 100
+write 9 0 0x40000000
+poll 9 0 [30] 0x0 100
+writefield 0 4 [4] 0x0
+write 14 0 0x2
+poll 14 0 [1] 0x0 100
+write 14 0 0x40000000
+poll 14 0 [30] 0x0 100
+writefield 0 4 [9] 0x0
+write 15 0 0x2
+poll 15 0 [1] 0x0 100
+write 15 0 0x40000000
+poll 15 0 [30] 0x0 100
+writefield 0 4 [10] 0x0
+write 16 0 0x2
+poll 16 0 [1] 0x0 100
+write 16 0 0x40000000
+poll 16 0 [30] 0x0 100
+writefield 0 4 [11] 0x0
+write 25 0 0x8000002
+poll 25 0 [1] 0x0 100
+write 25 0 0x48000000
+poll 25 0 [30] 0x0 100
+writefield 0 4 [20] 0x0
+write 26 0 0x8000002
+poll 26 0 [1] 0x0 100
+write 26 0 0x48000000
+poll 26 0 [30] 0x0 100
+writefield 0 4 [21] 0x0
+write 6 0 0x2
+poll 6 0 [1] 0x0 100
+write 6 0 0x40000000
+poll 6 0 [30] 0x0 100
+writefield 0 4 [1] 0x0
+write 10 0 0x2
+poll 10 0 [1] 0x0 100
+write 10 0 0x40000000
+poll 10 0 [30] 0x0 100
+writefield 0 4 [5] 0x0
+write 11 0 0x2
+poll 11 0 [1] 0x0 100
+write 11 0 0x40000000
+poll 11 0 [30] 0x0 100
+writefield 0 4 [6] 0x0
+write 13 0 0x2
+poll 13 0 [1] 0x0 100
+write 13 0 0x40000000
+poll 13 0 [30] 0x0 100
+writefield 0 4 [8] 0x0
+;; End Epoch 247
+irq 0x0
+;; End Blob '_ec_blob_weed_detection_247'
