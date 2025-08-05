@@ -680,19 +680,41 @@ static int pipeline_stage_capture_and_preprocess(app_context_t *ctx, uint32_t pi
  */
 static int pipeline_stage_face_detection(app_context_t *ctx)
 {
-    printf("🧠 PIPELINE STAGE 2: Weed Detection Network\n");
+    printf("PIPELINE STAGE 2: Weed Detection Network\n");
     
-    /* Step 2.1: Run weed detection neural network */
+    /* Step 2.1: Initialize weed detection network */
+    printf("   Initializing weed detection network...\n");
+    if (LL_ATON_RT_Init_Network(&NN_Instance_weed_detection) != LL_ATON_RT_OK) {
+        printf("   ERROR: Failed to initialize weed detection network\n");
+        return -1;
+    }
+    
+    /* Step 2.2: Set input buffer */
+    if (LL_ATON_RT_Set_Input_Buffer(&NN_Instance_weed_detection, 0, ctx->nn_ctx.detection_input_buffer) != LL_ATON_RT_OK) {
+        printf("   ERROR: Failed to set input buffer\n");
+        return -1;
+    }
+    
+    /* Step 2.3: Run weed detection neural network */
     printf("   Running weed detection neural network inference...\n");
     uint32_t start_time = HAL_GetTick();
-    RunNetworkSync(&NN_Instance_weed_detection);
+    if (LL_ATON_RT_Invoke(&NN_Instance_weed_detection) != LL_ATON_RT_OK) {
+        printf("   ERROR: Neural network inference failed\n");
+        return -1;
+    }
     uint32_t inference_time = HAL_GetTick() - start_time;
     
-    /* Step 2.2: Network cleanup */
-    printf("   🧹 Cleaning up neural network resources...\n");
-    LL_ATON_RT_DeInit_Network(&NN_Instance_weed_detection);
+    /* Step 2.4: Get output buffers */
+    for (int i = 0; i < LL_ATON_WEED_DETECTION_OUT_NUM; i++) {
+        ctx->nn_ctx.detection_output_buffers[i] = (float32_t *)LL_ATON_RT_Get_Output_Buffer(&NN_Instance_weed_detection, i);
+        ctx->nn_ctx.detection_output_lengths[i] = LL_ATON_RT_Get_Output_Buffer_Size(&NN_Instance_weed_detection, i);
+    }
+    ctx->nn_ctx.detection_output_count = LL_ATON_WEED_DETECTION_OUT_NUM;
     
-    printf("Weed detection completed in %lu ms (%d outputs ready)\n", 
+    /* Step 2.5: Cache invalidation for output buffers */
+    cleanup_nn_buffers(ctx->nn_ctx.detection_output_buffers, ctx->nn_ctx.detection_output_lengths, ctx->nn_ctx.detection_output_count);
+    
+    printf("   Weed detection completed in %lu ms (%d outputs ready)\n", 
            inference_time, ctx->nn_ctx.detection_output_count);
     return 0;
 }
