@@ -79,88 +79,18 @@ static void DrawPDBoundingBoxes(const pd_pp_box_t *boxes, uint32_t nb,
     width  = ((x0 + width)  < lcd_bg_area.X0 + lcd_bg_area.XSize) ? width  : (lcd_bg_area.X0 + lcd_bg_area.XSize - x0 - 1);
     height = ((y0 + height) < lcd_bg_area.Y0 + lcd_bg_area.YSize) ? height : (lcd_bg_area.Y0 + lcd_bg_area.YSize - y0 - 1);
     
-    /* Choose color based on similarity threshold */
-    uint32_t color_idx = boxes[i].prob >= SIMILARITY_COLOR_THRESHOLD ? 1 : 0;
+    /* Choose color based on confidence threshold */
+    uint32_t color_idx = boxes[i].prob >= 0.5f ? 0 : 1;  /* Green for weeds, red for low confidence */
     UTIL_LCD_DrawRect(x0, y0, width, height, colors[color_idx]);
     
-    /* Draw alignment region visualization with rotation (shows actual crop area) */
-    if (boxes[i].prob >= SIMILARITY_COLOR_THRESHOLD) {
-      /* Get eye positions for rotation calculation */
-      float left_eye_x = boxes[i].pKps[0].x * lcd_bg_area.XSize + lcd_bg_area.X0;
-      float left_eye_y = boxes[i].pKps[0].y * lcd_bg_area.YSize;
-      float right_eye_x = boxes[i].pKps[1].x * lcd_bg_area.XSize + lcd_bg_area.X0;
-      float right_eye_y = boxes[i].pKps[1].y * lcd_bg_area.YSize;
-      
-      /* Calculate face center and crop region */
-      float cx = boxes[i].x_center * lcd_bg_area.XSize + lcd_bg_area.X0;
-      float cy = boxes[i].y_center * lcd_bg_area.YSize; 
-      float w = boxes[i].width * lcd_bg_area.XSize * FACE_BBOX_PADDING_FACTOR;
-      float h = boxes[i].height * lcd_bg_area.YSize * FACE_BBOX_PADDING_FACTOR;
-      
-      /* Calculate rotation angle from eye positions */
-      float angle = atan2f(right_eye_y - left_eye_y, right_eye_x - left_eye_x);
-      float cos_a = cosf(angle);
-      float sin_a = sinf(angle);
-      
-      /* Draw rotated crop region as four lines forming a rectangle */
-      float half_w = w * 0.5f;
-      float half_h = h * 0.5f;
-      
-      /* Calculate rotated corner points */
-      float corners_x[4], corners_y[4];
-      
-      /* Top-left */
-      corners_x[0] = cx + (-half_w * cos_a - (-half_h) * sin_a);
-      corners_y[0] = cy + (-half_w * sin_a + (-half_h) * cos_a);
-      
-      /* Top-right */
-      corners_x[1] = cx + (half_w * cos_a - (-half_h) * sin_a);
-      corners_y[1] = cy + (half_w * sin_a + (-half_h) * cos_a);
-      
-      /* Bottom-right */
-      corners_x[2] = cx + (half_w * cos_a - half_h * sin_a);
-      corners_y[2] = cy + (half_w * sin_a + half_h * cos_a);
-      
-      /* Bottom-left */
-      corners_x[3] = cx + (-half_w * cos_a - half_h * sin_a);
-      corners_y[3] = cy + (-half_w * sin_a + half_h * cos_a);
-      
-      /* Draw lines between corners */
-      for (int j = 0; j < 4; j++) {
-        int next = (j + 1) % 4;
-        
-        /* Clamp coordinates to display bounds */
-        uint32_t x1 = (uint32_t)corners_x[j];
-        uint32_t y1 = (uint32_t)corners_y[j];
-        uint32_t x2 = (uint32_t)corners_x[next];
-        uint32_t y2 = (uint32_t)corners_y[next];
-        
-        if (x1 < lcd_bg_area.X0 + lcd_bg_area.XSize && y1 < lcd_bg_area.Y0 + lcd_bg_area.YSize &&
-            x2 < lcd_bg_area.X0 + lcd_bg_area.XSize && y2 < lcd_bg_area.Y0 + lcd_bg_area.YSize) {
-          UTIL_LCD_DrawLine(x1, y1, x2, y2, UTIL_LCD_COLOR_CYAN);
-        }
-      }
-    }
-    
-    /* Display similarity percentage above bounding box */
+    /* Display confidence percentage above bounding box */
     UTIL_LCDEx_PrintfAt(x0, y0 - 15, LEFT_MODE, "%.1f%%", boxes[i].prob * 100.f);
   }
   /* Tracker-specific overlay removed - now using detection-based display */
   (void)ctx;  /* Context parameter unused in simplified version */
 }
 
-static void DrawPdLandmarks(const pd_pp_box_t *boxes, uint32_t nb, uint32_t nb_kp)
-{
-  for (uint32_t i = 0; i < nb; i++) {
-    for (uint32_t j = 0; j < nb_kp; j++) {
-      uint32_t x = (uint32_t)(boxes[i].pKps[j].x * ((float)lcd_bg_area.XSize)) + lcd_bg_area.X0;
-      uint32_t y = (uint32_t)(boxes[i].pKps[j].y * ((float)lcd_bg_area.YSize));
-      x = x < lcd_bg_area.X0 + lcd_bg_area.XSize ? x : lcd_bg_area.X0 + lcd_bg_area.XSize - 1;
-      y = y < lcd_bg_area.Y0 + lcd_bg_area.YSize ? y : lcd_bg_area.Y0 + lcd_bg_area.YSize - 1;
-      UTIL_LCD_SetPixel(x, y, UTIL_LCD_COLOR_RED);
-    }
-  }
-}
+/* Landmarks drawing removed - not needed for weed detection */
 
 #endif /* ENABLE_LCD_DISPLAY */
 
@@ -176,9 +106,8 @@ static void StreamOutputPd(const pd_postprocess_out_t *p_postprocess)
 static void PrintInfo(uint32_t nb_rois, uint32_t total_frame_time_ms, uint32_t boottime_ms)
 {
   UTIL_LCD_SetBackColor(0x40000000);
-//  UTIL_LCDEx_PrintfAt(0, LINE(2), CENTER_MODE, "Objects %u", nb_rois);
-  UTIL_LCDEx_PrintfAt(0, LINE(20), CENTER_MODE, "FPS: %u", 1000/total_frame_time_ms);
-  UTIL_LCDEx_PrintfAt(0, LINE(21), CENTER_MODE, "Embeddings: %d/%d", embeddings_bank_count(), EMBEDDING_BANK_SIZE);
+  UTIL_LCDEx_PrintfAt(0, LINE(20), CENTER_MODE, "Objects: %u", nb_rois);
+  UTIL_LCDEx_PrintfAt(0, LINE(21), CENTER_MODE, "FPS: %u", 1000/total_frame_time_ms);
   UTIL_LCDEx_PrintfAt(0, LINE(22), CENTER_MODE, "Boot time: %ums", boottime_ms);
   UTIL_LCD_SetBackColor(0);
   Display_WelcomeScreen();
@@ -193,12 +122,9 @@ void Display_NetworkOutput(pd_postprocess_out_t *p_postprocess, uint32_t total_f
                                          LTDC_LAYER_2);
   assert(ret == HAL_OK);
   DrawPDBoundingBoxes(p_postprocess->pOutData, p_postprocess->box_nb, ctx);
-  DrawPdLandmarks(p_postprocess->pOutData, p_postprocess->box_nb, AI_PD_MODEL_PP_NB_KEYPOINTS);
+  /* Landmark drawing removed for weed detection */
   
-  /* Display cropped face if available - access via external global variables */
-  extern uint8_t fr_rgb[];
-  extern bool g_cropped_face_valid;
-  extern float g_current_similarity;
+  /* Face recognition display code removed for weed detection */
   
 #endif
 #ifdef ENABLE_PC_STREAM

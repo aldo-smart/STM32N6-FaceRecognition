@@ -49,6 +49,7 @@
 #include "memory_pool.h"
 #include "app_neural_network.h"
 #include "app_frame_processing.h"
+#include "weed_detection.h"
 
 #include "mem_sections.h"
 
@@ -219,7 +220,6 @@ static app_context_t g_app_ctx = {
 
 /* Function Prototypes */
 static int nn_init_detection(nn_context_t *nn_ctx);
-static int nn_init_recognition_lazy(nn_context_t *nn_ctx);
 static void nn_cleanup(nn_context_t *nn_ctx);
 static int app_init(app_context_t *ctx);
 static int app_main_loop(app_context_t *ctx);
@@ -231,15 +231,9 @@ static void psram_bss_zero(void);
 static int  app_get_frame(uint8_t *dest, uint32_t pitch_nn);
 static void app_output(pd_postprocess_out_t *res, uint32_t total_frame_time_ms, uint32_t boot_ms, const app_context_t *ctx);
 static void handle_user_button(app_context_t *ctx);
-static float verify_box(app_context_t *ctx, const pd_pp_box_t *box);
-static void process_frame_detections(app_context_t *ctx, pd_pp_box_t *boxes, uint32_t box_count);
 static void update_led_status(app_context_t *ctx);
 static void update_target_detection_history(app_context_t *ctx, bool target_found_this_frame);
 static void compute_target_detection_status(app_context_t *ctx);
-static float run_face_recognition_on_face(app_context_t *ctx, const pd_pp_box_t *box);
-static int convert_box_coordinates(const pd_pp_box_t *box, pixel_coords_t *pixel_coords);
-static int crop_face_region(const pixel_coords_t *coords, uint8_t *output_buffer);
-static float calculate_face_similarity(const float32_t *embedding, const float32_t *target_embedding, uint32_t embedding_size);
 static void cleanup_nn_buffers(float32_t **nn_out, int32_t *nn_out_len, int number_output);
 
 /* Neural Network Instance Declarations */
@@ -257,9 +251,9 @@ static int nn_init_detection(nn_context_t *nn_ctx)
     /* Clear context */
     memset(nn_ctx, 0, sizeof(*nn_ctx));
     
-    /* Initialize Face Detection Network */
-    const LL_Buffer_InfoTypeDef *detection_in_info = LL_ATON_Input_Buffers_Info_face_detection();
-    const LL_Buffer_InfoTypeDef *detection_out_info = LL_ATON_Output_Buffers_Info_face_detection();
+    /* Initialize Weed Detection Network */
+    const LL_Buffer_InfoTypeDef *detection_in_info = LL_ATON_Input_Buffers_Info_weed_detection();
+    const LL_Buffer_InfoTypeDef *detection_out_info = LL_ATON_Output_Buffers_Info_weed_detection();
     
     if (!detection_in_info || !detection_out_info) {
         return -1; /* Failed to get buffer info */
@@ -282,44 +276,12 @@ static int nn_init_detection(nn_context_t *nn_ctx)
     
     nn_ctx->detection_initialized = true;
     
-    printf("Face Detection Network Ready: %lu bytes, %d outputs\n", 
+    printf("Weed Detection Network Ready: %lu bytes, %d outputs\n", 
            nn_ctx->detection_input_length, nn_ctx->detection_output_count);
     
     return 0;
 }
 
-/**
- * @brief Initialize face recognition network lazily (when first face detected)
- * @param nn_ctx Neural network context to initialize
- * @return 0 on success, negative on error
- */
-static int nn_init_recognition_lazy(nn_context_t *nn_ctx)
-{
-    if (nn_ctx->recognition_initialized) {
-        return 0; /* Already initialized */
-    }
-    
-    /* Initialize Face Recognition Network */
-    const LL_Buffer_InfoTypeDef *recognition_in_info = LL_ATON_Input_Buffers_Info_face_recognition();
-    const LL_Buffer_InfoTypeDef *recognition_out_info = LL_ATON_Output_Buffers_Info_face_recognition();
-    
-    if (!recognition_in_info || !recognition_out_info) {
-        return -2; /* Failed to get face recognition buffer info */
-    }
-    
-    /* Setup recognition buffers */
-    nn_ctx->recognition_input_buffer = (uint8_t *) LL_Buffer_addr_start(&recognition_in_info[0]);
-    nn_ctx->recognition_input_length = LL_Buffer_len(&recognition_in_info[0]);
-    nn_ctx->recognition_output_buffer = (float32_t *) LL_Buffer_addr_start(&recognition_out_info[0]);
-    nn_ctx->recognition_output_length = LL_Buffer_len(&recognition_out_info[0]);
-    
-    nn_ctx->recognition_initialized = true;
-    
-    printf("Face Recognition Network Loaded: %lu bytes -> %lu bytes\n", 
-           nn_ctx->recognition_input_length, nn_ctx->recognition_output_length);
-    
-    return 0;
-}
 
 /**
  * @brief Clean up neural network resources
@@ -494,153 +456,9 @@ static void compute_target_detection_status(app_context_t *ctx)
     ctx->target_detected = (positive_detections >= 3);
 }
 
-/**
- * @brief Convert normalized coordinates to pixel coordinates
- * @param box Bounding box with normalized coordinates
- * @param pixel_coords Output pixel coordinates structure
- * @return 0 on success, negative on error
- */
-static int convert_box_coordinates(const pd_pp_box_t *box, 
-                                  pixel_coords_t *pixel_coords)
-{
-    if (!box || !pixel_coords) {
-        return -1;
-    }
-    
-    pixel_coords->cx = box->x_center * lcd_bg_area.XSize;
-    pixel_coords->cy = box->y_center * lcd_bg_area.YSize;
-    pixel_coords->w  = box->width  * lcd_bg_area.XSize * FACE_BBOX_PADDING_FACTOR;
-    pixel_coords->h  = box->height * lcd_bg_area.YSize * FACE_BBOX_PADDING_FACTOR;
-    pixel_coords->lx = box->pKps[0].x * lcd_bg_area.XSize;
-    pixel_coords->ly = box->pKps[0].y * lcd_bg_area.YSize;
-    pixel_coords->rx = box->pKps[1].x * lcd_bg_area.XSize;
-    pixel_coords->ry = box->pKps[1].y * lcd_bg_area.YSize;
-    
-    return 0;
-}
 
-/**
- * @brief Crop face region from input image
- * @param coords Pixel coordinates structure
- * @param output_buffer Output buffer for cropped face
- * @return 0 on success, negative on error
- */
-static int crop_face_region(const pixel_coords_t *coords,
-                           uint8_t *output_buffer)
-{
-    if (!coords || !output_buffer) {
-        return -1;
-    }
-    
-#if INPUT_SRC_MODE == INPUT_SRC_CAMERA
-#ifdef DUMMY_INPUT_BUFFER
-    img_crop_align565_to_888(dummy_test_img_buffer, lcd_bg_area.XSize, output_buffer,
-                            lcd_bg_area.XSize, lcd_bg_area.YSize,
-                            FACE_RECOGNITION_WIDTH, FACE_RECOGNITION_HEIGHT,
-                            coords->cx, coords->cy, coords->w, coords->h,
-                            coords->lx, coords->ly, coords->rx, coords->ry);
-#else
-    img_crop_align565_to_888(img_buffer, lcd_bg_area.XSize, output_buffer,
-                            lcd_bg_area.XSize, lcd_bg_area.YSize,
-                            FACE_RECOGNITION_WIDTH, FACE_RECOGNITION_HEIGHT,
-                            coords->cx, coords->cy, coords->w, coords->h, 
-                            coords->lx, coords->ly, coords->rx, coords->ry);
-#endif //DUMMY_INPUT_BUFFER
 
-#else
-    img_crop_align(nn_rgb, output_buffer,
-                   NN_WIDTH, NN_HEIGHT,
-                   FACE_RECOGNITION_WIDTH, FACE_RECOGNITION_HEIGHT, NN_BPP,
-                   coords->cx, coords->cy, coords->w, coords->h, 
-                   coords->lx, coords->ly, coords->rx, coords->ry);
-#endif
-    
-    return 0;
-}
 
-/**
- * @brief Calculate face similarity with target embedding
- * @param embedding Current face embedding
- * @param target_embedding Target embedding for comparison
- * @param embedding_size Size of embedding arrays
- * @return Cosine similarity score (0.0 to 1.0)
- */
-static float calculate_face_similarity(const float32_t *embedding,
-                                      const float32_t *target_embedding,
-                                      uint32_t embedding_size)
-{
-    if (!embedding || !target_embedding || embedding_size == 0) {
-        return 0.0f;
-    }
-    
-    return embedding_cosine_similarity(embedding, target_embedding, embedding_size);
-}
-
-/**
- * @brief Run face recognition on a single face
- * @param ctx Application context
- * @param box Bounding box of face to recognize
- * @return Similarity score (0.0 to 1.0)
- */
-static float run_face_recognition_on_face(app_context_t *ctx, const pd_pp_box_t *box)
-{
-    pixel_coords_t pixel_coords;
-    float32_t embedding[EMBEDDING_SIZE];
-    
-    /* Lazy initialization of face recognition network */
-    if (!ctx->nn_ctx.recognition_initialized) {
-        if (nn_init_recognition_lazy(&ctx->nn_ctx) < 0) {
-            printf("Face recognition network lazy initialization failed\n");
-            return 0.0f;
-        }
-    }
-    
-    /* Convert coordinates */
-    if (convert_box_coordinates(box, &pixel_coords) < 0) {
-        return 0.0f;
-    }
-    
-    /* Crop face region */
-    if (crop_face_region(&pixel_coords, fr_rgb) < 0) {
-        return 0.0f;
-    }
-    
-    /* Prepare input for face recognition network */
-    img_rgb_to_chw_float_norm(fr_rgb, (float32_t*)ctx->nn_ctx.recognition_input_buffer, 
-                             FR_WIDTH * NN_BPP, FR_WIDTH, FR_HEIGHT);
-    
-    SCB_CleanInvalidateDCache_by_Addr(ctx->nn_ctx.recognition_input_buffer, 
-                                     ctx->nn_ctx.recognition_input_length);
-    
-    /* Run face recognition inference */
-    RunNetworkSync(&NN_Instance_face_recognition);
-    SCB_InvalidateDCache_by_Addr(ctx->nn_ctx.recognition_output_buffer, 
-                                ctx->nn_ctx.recognition_output_length);
-    
-    /* Convert output to float embedding */
-    for (uint32_t i = 0; i < EMBEDDING_SIZE; i++) {
-        embedding[i] = ((float32_t)ctx->nn_ctx.recognition_output_buffer[i]);
-    }
-    
-    /* Calculate similarity */
-    float similarity = calculate_face_similarity(embedding, target_embedding, EMBEDDING_SIZE);
-    
-    /* Store embedding in context (for button press functionality) */
-    /* The last face processed will have its embedding stored - this will be overwritten */
-    /* but the process_frame_detections will ensure best face embedding is preserved */
-    for (uint32_t i = 0; i < EMBEDDING_SIZE; i++) {
-        ctx->current_embedding[i] = embedding[i];
-    }
-    ctx->embedding_valid = 1;
-    
-    /* Send results via PC stream */
-    Enhanced_PC_STREAM_SendFrame(fr_rgb, FACE_RECOGNITION_WIDTH, 
-                                FACE_RECOGNITION_HEIGHT, NN_BPP, "ALN", NULL, NULL);
-    Enhanced_PC_STREAM_SendEmbedding(embedding, EMBEDDING_SIZE);
-    
-    LL_ATON_RT_DeInit_Network(&NN_Instance_face_recognition);
-    return similarity;
-}
 
 /**
  * @brief Handle user button press events
@@ -659,11 +477,9 @@ static void handle_user_button(app_context_t *ctx)
         uint32_t duration = HAL_GetTick() - ctx->button_press_ts;
         
         if (duration >= BUTTON_LONG_PRESS_DURATION_MS) {
-            /* Long press: reset embeddings bank */
-            embeddings_bank_reset();
-        } else if (ctx->embedding_valid) {
-            /* Short press: add current embedding */
-            embeddings_bank_add(ctx->current_embedding);
+            printf("Long button press - System reset\n");
+        } else {
+            printf("Short button press - No action for weed detection\n");
         }
     }
     
@@ -671,17 +487,6 @@ static void handle_user_button(app_context_t *ctx)
 }
 
 
-/**
- * @brief Legacy verify_box function - now uses run_face_recognition_on_face
- * @param ctx Application context
- * @param box Bounding box to verify
- * @return Similarity score (0.0 to 1.0)
- */
-static float verify_box(app_context_t *ctx, const pd_pp_box_t *box)
-{
-    /* Legacy function - just call the new implementation */
-    return run_face_recognition_on_face(ctx, box);
-}
 
 /**
  * @brief Initialize application context and neural networks
@@ -717,10 +522,10 @@ static int app_init(app_context_t *ctx)
     BSP_LED_Off(LED2);
     BSP_PB_Init(BUTTON_USER1, BUTTON_MODE_GPIO);
     
-    /* Initialize face detection network only (lazy load face recognition) */
+    /* Initialize weed detection network */
     ret = nn_init_detection(&ctx->nn_ctx);
     if (ret < 0) {
-        printf("Face detection network initialization failed: %d\n", ret);
+        printf("Weed detection network initialization failed: %d\n", ret);
         return ret;
     }
     
@@ -731,103 +536,9 @@ static int app_init(app_context_t *ctx)
     return 0;
 }
 
-/**
- * @brief Process frame detections - simplified tracker-free approach
- * @param ctx Application context
- * @param boxes Detected bounding boxes
- * @param box_count Number of detected boxes
- */
-static void process_frame_detections(app_context_t *ctx, pd_pp_box_t *boxes, uint32_t box_count)
-{
-    /* Reset frame state */
-    ctx->face_detected = false;
-    ctx->face_verified = false;
-    ctx->current_similarity = 0.0f;
-    
-    /* Reset global cropped face display variables */
-    g_cropped_face_valid = false;
-    g_current_similarity = 0.0f;
-    
-    bool target_found_this_frame = false;
-    float highest_similarity = 0.0f;
-    static float32_t best_embedding[EMBEDDING_SIZE];  /* Store best face embedding */
-    bool best_embedding_valid = false;
-    
-    /* Reset embedding validity at start of frame */
-    ctx->embedding_valid = 0;
-    
-    /* Run face recognition on ALL detected faces */
-    if (box_count > 0) {
-        printf("   Running face recognition on %u detected faces\n", box_count);
-        
-        for (uint32_t i = 0; i < box_count; i++) {
-            /* Only run recognition on faces with sufficient detection confidence */
-            if (boxes[i].prob >= FACE_DETECTION_CONFIDENCE_THRESHOLD) {
-                printf("   Face %u: detection=%.1f%% -> ", i + 1, boxes[i].prob * 100.0f);
-                
-                float similarity = run_face_recognition_on_face(ctx, &boxes[i]);
-                
-                /* Update the box with the recognition similarity (not detection confidence) */
-                boxes[i].prob = similarity;
-                
-                printf("recognition=%.1f%%\n", similarity * 100.0f);
-                
-                /* Check if this face is above threshold */
-                if (similarity >= FACE_SIMILARITY_THRESHOLD) {
-                    target_found_this_frame = true;
-                }
-                
-                /* Track the face with highest similarity for display */
-                if (similarity > highest_similarity) {
-                    highest_similarity = similarity;
-                    ctx->best_detection = boxes[i];
-                    ctx->current_similarity = similarity;
-                    ctx->face_detected = true;
-                    
-                    /* Store for LCD display */
-                    g_cropped_face_valid = true;
-                    g_current_similarity = similarity;
-                    
-                    /* Store best embedding (copy from current_embedding set by run_face_recognition_on_face) */
-                    for (uint32_t j = 0; j < EMBEDDING_SIZE; j++) {
-                        best_embedding[j] = ctx->current_embedding[j];
-                    }
-                    best_embedding_valid = true;
-                }
-            } else {
-                /* Face detection confidence too low - skip recognition */
-                printf("   Face %u: detection=%.1f%% (too low, skipping recognition)\n", 
-                       i + 1, boxes[i].prob * 100.0f);
-                /* Set very low similarity to indicate no recognition */
-                boxes[i].prob = 0.05f;
-            }
-        }
-    }
-    
-    /* Update target detection history */
-    update_target_detection_history(ctx, target_found_this_frame);
-    compute_target_detection_status(ctx);
-    
-    /* Store best embedding for button press functionality */
-    if (best_embedding_valid) {
-        for (uint32_t i = 0; i < EMBEDDING_SIZE; i++) {
-            ctx->current_embedding[i] = best_embedding[i];
-        }
-        ctx->embedding_valid = 1;
-    }
-    
-    /* Set verification status based on voting */
-    ctx->face_verified = ctx->target_detected;
-    
-    printf("   Frame summary: faces=%u, target_this_frame=%s, target_detected=%s (%.1f%% best)\n",
-           box_count,
-           target_found_this_frame ? "YES" : "NO",
-           ctx->target_detected ? "YES" : "NO",
-           highest_similarity * 100.0f);
-}
 
 /**
- * @brief Update LED status based on simple voting mechanism
+ * @brief Update LED status based on weed detection results
  * @param ctx Application context
  */
 static void update_led_status(app_context_t *ctx)
@@ -835,25 +546,25 @@ static void update_led_status(app_context_t *ctx)
     uint32_t current_time = HAL_GetTick();
     
     if (ctx->target_detected) {
-        BSP_LED_On(LED2);   /* Green LED - target detected (3+ of last 5 frames) */
+        BSP_LED_On(LED2);   /* Green LED - weeds detected (3+ of last 5 frames) */
         BSP_LED_Off(LED1);
         /* Update timestamp for target detection */
         ctx->last_stable_verification_ts = current_time;
         ctx->led_timeout_active = false;
     } else if (ctx->face_detected) {
-        BSP_LED_On(LED1);   /* Red LED - face detected but not verified */
+        BSP_LED_On(LED1);   /* Red LED - objects detected but below threshold */
         BSP_LED_Off(LED2);
         ctx->led_timeout_active = false;
     } else {
-        /* No face detected - check if we should maintain green LED due to recent verification */
+        /* No objects detected - check if we should maintain green LED due to recent detection */
         if (ctx->last_stable_verification_ts != 0 && 
             (current_time - ctx->last_stable_verification_ts) < FACE_UNVERIFIED_LED_TIMEOUT_MS) {
-            /* Keep green LED on for timeout period after last positive recognition */
+            /* Keep green LED on for timeout period after last positive detection */
             BSP_LED_On(LED2);
             BSP_LED_Off(LED1);
             ctx->led_timeout_active = true;
         } else {
-            /* Timeout expired or no previous verification - turn off both LEDs */
+            /* Timeout expired or no previous detection - turn off both LEDs */
             BSP_LED_Off(LED1);
             BSP_LED_Off(LED2);
             ctx->led_timeout_active = false;
@@ -882,11 +593,11 @@ static void cleanup_nn_buffers(float32_t **nn_out, int32_t *nn_out_len, int numb
 
 
 /* ========================================================================= */
-/* EDUCATIONAL FACE RECOGNITION PIPELINE                                    */
+/* EDUCATIONAL WEED DETECTION PIPELINE                                      */
 /* ========================================================================= */
 /*
- * This pipeline demonstrates a complete face detection and recognition system
- * with multi-face tracking capability, broken down into clear stages:
+ * This pipeline demonstrates a complete weed detection system
+ * using YOLO object detection, broken down into clear stages:
  *
  * PIPELINE OVERVIEW:
  * ┌─────────────────────────────────────────────────────────────────────────┐
@@ -895,18 +606,18 @@ static void cleanup_nn_buffers(float32_t **nn_out, int32_t *nn_out_len, int numb
  * └─────────────────────────┬───────────────────────────────────────────────┘
  *                           │
  * ┌─────────────────────────▼───────────────────────────────────────────────┐
- * │  STAGE 2: Face Detection Network                                       │
- * │  🧠 Run CNN to detect faces → Extract bounding boxes                   │
+ * │  STAGE 2: Weed Detection Network (YOLO)                               │
+ * │  🧠 Run CNN to detect objects → Extract bounding boxes                 │
  * └─────────────────────────┬───────────────────────────────────────────────┘
  *                           │
  * ┌─────────────────────────▼───────────────────────────────────────────────┐
- * │  STAGE 3: Post-Processing & Face Tracking                             │
- * |  Convert network output -> Track faces -> Maintain consistency        |
+ * │  STAGE 3: Post-Processing & Object Extraction                         │
+ * |  Convert network output -> Extract objects -> Apply NMS               |
  * └─────────────────────────┬───────────────────────────────────────────────┘
  *                           │
  * ┌─────────────────────────▼───────────────────────────────────────────────┐
- * │  STAGE 4: Face Recognition (Primary Face Only)                        │
- * |  Crop primary face -> Run recognition -> Smooth similarity scores     |
+ * │  STAGE 4: Object Classification & Filtering                           │
+ * |  Filter by confidence -> Classify weeds -> Update detection history   |
  * └─────────────────────────┬───────────────────────────────────────────────┘
  *                           │
  * ┌─────────────────────────▼───────────────────────────────────────────────┐
@@ -969,19 +680,19 @@ static int pipeline_stage_capture_and_preprocess(app_context_t *ctx, uint32_t pi
  */
 static int pipeline_stage_face_detection(app_context_t *ctx)
 {
-    printf("🧠 PIPELINE STAGE 2: Face Detection Network\n");
+    printf("🧠 PIPELINE STAGE 2: Weed Detection Network\n");
     
-    /* Step 2.1: Run face detection neural network */
-    printf("   Running face detection neural network inference...\n");
+    /* Step 2.1: Run weed detection neural network */
+    printf("   Running weed detection neural network inference...\n");
     uint32_t start_time = HAL_GetTick();
-    RunNetworkSync(&NN_Instance_face_detection);
+    RunNetworkSync(&NN_Instance_weed_detection);
     uint32_t inference_time = HAL_GetTick() - start_time;
     
     /* Step 2.2: Network cleanup */
     printf("   🧹 Cleaning up neural network resources...\n");
-    LL_ATON_RT_DeInit_Network(&NN_Instance_face_detection);
+    LL_ATON_RT_DeInit_Network(&NN_Instance_weed_detection);
     
-    printf("Face detection completed in %lu ms (%d outputs ready)\n", 
+    printf("Weed detection completed in %lu ms (%d outputs ready)\n", 
            inference_time, ctx->nn_ctx.detection_output_count);
     return 0;
 }
@@ -1005,44 +716,68 @@ static int pipeline_stage_postprocessing(app_context_t *ctx)
         return -1;
     }
     
-    /* Step 3.2: Extract detected faces */
+    /* Step 3.2: Extract detected objects */
     pd_pp_box_t *boxes = (pd_pp_box_t *)ctx->pp_output.pOutData;
-    printf("   Extracted %d face bounding boxes\n", ctx->pp_output.box_nb);
+    printf("   Extracted %d object bounding boxes\n", ctx->pp_output.box_nb);
     
     /* Step 3.3: Log detection details for educational purposes */
     for (uint32_t i = 0; i < ctx->pp_output.box_nb && i < 3; i++) {
-        printf("   Face %d: confidence=%.3f, center=(%.2f,%.2f), size=%.2fx%.2f\n", 
+        printf("   Object %d: confidence=%.3f, center=(%.2f,%.2f), size=%.2fx%.2f\n", 
                i + 1, boxes[i].prob, boxes[i].x_center, boxes[i].y_center, 
                boxes[i].width, boxes[i].height);
     }
     
-    printf("Post-processing completed: %d faces detected\n", ctx->pp_output.box_nb);
+    printf("Post-processing completed: %d objects detected\n", ctx->pp_output.box_nb);
     
     return 0;
 }
 
 /**
- * @brief Pipeline Stage 4: Face Recognition and Verification
+ * @brief Pipeline Stage 4: Object Classification and Filtering
  * @param ctx Application context
  * @return 0 on success, negative on error
  */
-static int pipeline_stage_face_recognition(app_context_t *ctx)
+static int pipeline_stage_object_classification(app_context_t *ctx)
 {
-    printf("PIPELINE STAGE 4: Face Recognition\n");
+    printf("PIPELINE STAGE 4: Object Classification\n");
     
-    /* Step 4.1: Process all detected faces with recognition */
+    /* Step 4.1: Process detected objects */
     pd_pp_box_t *boxes = (pd_pp_box_t *)ctx->pp_output.pOutData;
-    process_frame_detections(ctx, boxes, ctx->pp_output.box_nb);
     
-    /* Step 4.2: Log recognition results */
-    if (ctx->face_detected) {
-        printf("Face recognition: detected=%s, verified=%s, best_similarity=%.1f%%\n",
-               ctx->face_detected ? "YES" : "NO",
-               ctx->face_verified ? "YES" : "NO",
-               ctx->current_similarity * 100.0f);
-    } else {
-        printf("ℹ️ No faces above threshold detected\n");
+    /* Reset frame state */
+    ctx->face_detected = false;
+    ctx->face_verified = false;
+    ctx->current_similarity = 0.0f;
+    
+    bool target_found_this_frame = false;
+    float highest_confidence = 0.0f;
+    
+    /* Step 4.2: Filter objects by confidence threshold */
+    for (uint32_t i = 0; i < ctx->pp_output.box_nb; i++) {
+        if (boxes[i].prob >= 0.5f) {  /* Confidence threshold for weeds */
+            target_found_this_frame = true;
+            printf("   Object %u: confidence=%.1f%% (WEED DETECTED)\n", i + 1, boxes[i].prob * 100.0f);
+            
+            if (boxes[i].prob > highest_confidence) {
+                highest_confidence = boxes[i].prob;
+                ctx->best_detection = boxes[i];
+                ctx->current_similarity = boxes[i].prob;
+                ctx->face_detected = true;  /* Reusing for "object detected" */
+            }
+        } else {
+            printf("   Object %u: confidence=%.1f%% (below threshold)\n", i + 1, boxes[i].prob * 100.0f);
+        }
     }
+    
+    /* Step 4.3: Update detection history */
+    update_target_detection_history(ctx, target_found_this_frame);
+    compute_target_detection_status(ctx);
+    ctx->face_verified = ctx->target_detected;
+    
+    printf("Object classification: objects=%u, target_detected=%s (%.1f%% best)\n",
+           ctx->pp_output.box_nb,
+           ctx->target_detected ? "YES" : "NO",
+           highest_confidence * 100.0f);
     
     return 0;
 }
@@ -1114,7 +849,7 @@ static int app_main_loop(app_context_t *ctx)
 {
     /* Verify at least detection network is initialized */
     if (!ctx->nn_ctx.detection_initialized) {
-        printf("Face detection network not initialized!\n");
+        printf("Weed detection network not initialized!\n");
         return -1;
     }
     
@@ -1158,8 +893,8 @@ static int app_main_loop(app_context_t *ctx)
         
         //HINT: for dummy input the cctx->pp_output->pOutData.x_center = 0.5113132 ctx->pp_output->pOutData.y_center = 0.543815017
 
-        /* Stage 4: Face Recognition and Verification */
-        if (pipeline_stage_face_recognition(ctx) != 0) {
+        /* Stage 4: Object Classification and Filtering */
+        if (pipeline_stage_object_classification(ctx) != 0) {
             continue; /* Skip this frame on error */
         }
         
