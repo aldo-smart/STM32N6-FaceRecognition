@@ -240,14 +240,17 @@ int32_t CMW_CAMERA_Init(CMW_CameraInit_t *initConf)
   {
     return CMW_ERROR_UNKNOWN_COMPONENT;
   }
-  ret = CMW_CAMERA_SetExposure(info.exposure_min);
+  // ret = CMW_CAMERA_SetExposure(info.exposure_min);
+  ret = CMW_CAMERA_SetExposure(info.exposure_max / 4);
   if (ret == CMW_ERROR_COMPONENT_FAILURE)
   {
     return CMW_ERROR_UNKNOWN_COMPONENT;
   }
-  ret = CMW_CAMERA_SetGain(info.gain_min);
+  // ret = CMW_CAMERA_SetGain(info.gain_min);
+  ret = CMW_CAMERA_SetGain(info.gain_max / 2);
   if (ret == CMW_ERROR_COMPONENT_FAILURE)
   {
+    CMW_CAMERA_SetExposureMode(CMW_EXPOSUREMODE_AUTO);
     return CMW_ERROR_UNKNOWN_COMPONENT;
   }
 

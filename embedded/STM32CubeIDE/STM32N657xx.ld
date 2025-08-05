@@ -154,8 +154,10 @@ SECTIONS
   . = ALIGN(32);
   __psram_bss_start__ = .;
 
-  *(.psram_bss)
-  *(.bss.psram)
+  /* Seções que iremos agrupar no PSRAM zero-inicializado (NOLOAD) */
+  *(.psram_bss)        /* principal: usada pelo seu PSRAM_BSS */
+  *(.psram_bss.*)      /* variações, caso use sub-sections */
+  *(.bss.psram)        /* compatibilidade com outros estilos */
   *(.bss.psram.*)
 
   . = ALIGN(32);

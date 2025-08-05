@@ -60,6 +60,13 @@
 #define SIMILARITY_THRESHOLD        FACE_SIMILARITY_THRESHOLD
 #define LONG_PRESS_MS               BUTTON_LONG_PRESS_DURATION_MS
 
+
+/* Extern */
+
+extern uint8_t __psram_bss_start__;
+extern uint8_t __psram_bss_end__;
+
+
 /* Neural Network Context Structure */
 typedef struct {
     /* Face Detection Network */
@@ -153,13 +160,13 @@ bool g_cropped_face_valid = false;
 float g_current_similarity = 0.0f;
 
 /* Optimized Memory Buffers - Using PSRAM for large buffers to reduce boot time */
-__attribute__ ((section (".psram_bss")))
-__attribute__((aligned (32)))
-uint8_t nn_rgb[NN_WIDTH * NN_HEIGHT * NN_BPP];  /* 128x128x3 = 49KB */
+// __attribute__ ((section (".psram_bss")))
+// __attribute__((aligned (32)))
+PSRAM_BSS uint8_t nn_rgb[NN_WIDTH * NN_HEIGHT * NN_BPP];  /* 128x128x3 = 49KB */
 
-__attribute__ ((section (".psram_bss")))
-__attribute__((aligned (32)))
-uint8_t fr_rgb[FR_WIDTH * FR_HEIGHT * NN_BPP];  /* 112x112x3 = 37KB */
+// __attribute__ ((section (".psram_bss")))
+// __attribute__((aligned (32)))
+PSRAM_BSS uint8_t fr_rgb[FR_WIDTH * FR_HEIGHT * NN_BPP];  /* 112x112x3 = 37KB */
 
 // __attribute__ ((aligned (32)))
 PSRAM_BSS uint8_t dcmipp_out_nn[DCMIPP_OUT_NN_BUFF_LEN];  /* Camera output buffer */
@@ -219,6 +226,8 @@ static int app_main_loop(app_context_t *ctx);
 static void app_camera_init(uint32_t *pitch_nn);
 static void app_display_init(void);
 static void app_input_start(void);
+static void lcd_smoke_test(void);
+static void psram_bss_zero(void);
 static int  app_get_frame(uint8_t *dest, uint32_t pitch_nn);
 static void app_output(pd_postprocess_out_t *res, uint32_t total_frame_time_ms, uint32_t boot_ms, const app_context_t *ctx);
 static void handle_user_button(app_context_t *ctx);
@@ -234,8 +243,9 @@ static float calculate_face_similarity(const float32_t *embedding, const float32
 static void cleanup_nn_buffers(float32_t **nn_out, int32_t *nn_out_len, int number_output);
 
 /* Neural Network Instance Declarations */
-LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(face_detection);
-LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(face_recognition);
+// LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(face_detection);
+// LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(face_recognition);
+LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(weed_detection);
 
 /**
  * @brief Initialize face detection network only (for faster boot)
@@ -350,6 +360,42 @@ static void app_display_init(void)
     LCD_init();
 #endif
 }
+
+static void lcd_smoke_test(void)
+{
+    // img_buffer vem de img_buffer.h como uint8_t[].
+    // Trate-o como RGB565 (16 bits por pixel):
+    uint16_t *fb = (uint16_t *)img_buffer;
+
+    uint32_t w = lcd_bg_area.XSize;
+    uint32_t h = lcd_bg_area.YSize;
+
+    for (uint32_t y = 0; y < h; ++y) {
+        for (uint32_t x = 0; x < w; ++x) {
+            // padrão xadrez: vermelho/verde em blocos 10x10
+            uint16_t color = (((x/10) ^ (y/10)) & 1) ? 0xF800 : 0x07E0; // RGB565
+            fb[y * w + x] = color;
+        }
+    }
+
+    // Flush de cache para garantir que o LTDC veja os dados na RAM/PSRAM
+    uintptr_t start = ((uintptr_t)fb) & ~((uintptr_t)31);
+    uintptr_t end   = ((uintptr_t)fb + (w*h*2) + 31) & ~((uintptr_t)31);
+    SCB_CleanDCache_by_Addr((void*)start, end - start);
+}
+
+static void psram_bss_zero(void)
+{
+    size_t len = (size_t)(&__psram_bss_end__ - &__psram_bss_start__);
+    memset(&__psram_bss_start__, 0, len);
+
+    // Opcional: Clean cache se o LTDC/CAM vai ler logo em seguida
+    uintptr_t start = ((uintptr_t)&__psram_bss_start__) & ~((uintptr_t)31);
+    uintptr_t end   = ((uintptr_t)&__psram_bss_end__   + 31) & ~((uintptr_t)31);
+    SCB_CleanDCache_by_Addr((void*)start, end - start);
+}
+
+
 
 /**
  * @brief Start camera and display pipes (after both systems are initialized)
@@ -1079,6 +1125,8 @@ static int app_main_loop(app_context_t *ctx)
     printf("Initializing Camera and Display Systems\n");
     app_camera_init(&pitch_nn);
     app_display_init();
+    psram_bss_zero();
+    lcd_smoke_test();
     app_input_start();
     printf("Systems initialized, starting pipeline\n");
     printf("═══════════════════════════════════════════════════════════\n");
@@ -1135,7 +1183,7 @@ static int app_main_loop(app_context_t *ctx)
  */
 int main(void)
 {
-
+    // psram_bss_zero();
     int ret = app_init(&g_app_ctx);
     if (ret < 0) {
         /* Initialization failed - handle error */
