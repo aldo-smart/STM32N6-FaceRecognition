@@ -199,6 +199,9 @@ endif
 
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fstack-usage -fdata-sections -ffunction-sections -fcyclomatic-complexity
 CFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fstack-usage -fdata-sections -ffunction-sections -fcyclomatic-complexity
+# injeta o header de correções e desabilita strict-aliasing
+CFLAGS += -include Models/model_fixups.h
+CFLAGS += -fno-strict-aliasing
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 
@@ -214,10 +217,13 @@ LDSCRIPT = STM32CubeIDE/STM32N657xx.ld
 LIBS = -lc -lm -lnosys -lNetworkRuntime1000_CM55_GCC -ln6-evision-awb_gcc -ln6-evision-st-ae_gcc
 LIBDIR = -LMiddlewares/AI_Runtime/Lib/GCC/ARMCortexM55
 LIBDIR += -LMiddlewares/Camera_Middleware/ISP_Library/evision/Lib
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+# LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+
+LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) -Wl,--start-group $(LIBS) -Wl,--end-group -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+
 # Uncomment to enable %f formatted output
 LDFLAGS += -u _printf_float
-LDFLAGS += -u assert
+# LDFLAGS += -u assert
 LDFLAGS += -Wl,--print-memory-usage
 # Avoid 'build/Project.elf has a LOAD segment with RWX permissions' warning
 LDFLAGS += -Wl,--no-warn-rwx-segments

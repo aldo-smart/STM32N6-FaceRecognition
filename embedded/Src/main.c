@@ -50,6 +50,8 @@
 #include "app_neural_network.h"
 #include "app_frame_processing.h"
 
+#include "mem_sections.h"
+
 /* Legacy compatibility - constants moved to app_constants.h */
 #define REVERIFY_INTERVAL_MS        FACE_REVERIFY_INTERVAL_MS
 #define MAX_NUMBER_OUTPUT           NN_MAX_OUTPUT_BUFFERS
@@ -159,8 +161,8 @@ __attribute__ ((section (".psram_bss")))
 __attribute__((aligned (32)))
 uint8_t fr_rgb[FR_WIDTH * FR_HEIGHT * NN_BPP];  /* 112x112x3 = 37KB */
 
-__attribute__ ((aligned (32)))
-uint8_t dcmipp_out_nn[DCMIPP_OUT_NN_BUFF_LEN];  /* Camera output buffer */
+// __attribute__ ((aligned (32)))
+PSRAM_BSS uint8_t dcmipp_out_nn[DCMIPP_OUT_NN_BUFF_LEN];  /* Camera output buffer */
 
 #ifdef DUMMY_INPUT_BUFFER
 /* ========================================================================= */

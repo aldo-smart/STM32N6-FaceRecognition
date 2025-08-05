@@ -148,12 +148,19 @@ SECTIONS
     . = ALIGN(8);
   } >AXISRAM1_S
 
-  .psram_section (NOLOAD):
-  {
-     . = ALIGN(32);
-    *(.psram_bss)
-    . = ALIGN(32);
-  } >PSRAM
+/* External PSRAM zero-init buffers */
+.psram_section (NOLOAD):
+{
+  . = ALIGN(32);
+  __psram_bss_start__ = .;
+
+  *(.psram_bss)
+  *(.bss.psram)
+  *(.bss.psram.*)
+
+  . = ALIGN(32);
+  __psram_bss_end__ = .;
+} > PSRAM
 
   /* Remove information from the compiler libraries */
   /DISCARD/ :
