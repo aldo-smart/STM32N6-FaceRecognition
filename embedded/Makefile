@@ -43,8 +43,6 @@ C_SOURCES += Src/stm32_lcd_ex.c
 C_SOURCES += Src/stm32n6xx_it.c
 C_SOURCES += Middlewares/AI_Runtime/Npu/Devices/STM32N6XX/mcu_cache.c
 C_SOURCES += Middlewares/AI_Runtime/Npu/Devices/STM32N6XX/npu_cache.c
-C_SOURCES += Models/face_detection.c
-C_SOURCES += Models/face_recognition.c
 C_SOURCES += Models/weed_detection.c
 C_SOURCES += STM32Cube_FW_N6/Drivers/CMSIS/Device/ST/STM32N6xx/Source/Templates/system_stm32n6xx_fsbl.c
 C_SOURCES += STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal.c
@@ -91,8 +89,6 @@ C_SOURCES += Src/display_utils.c
 C_SOURCES += Src/system_utils.c
 C_SOURCES += Src/enhanced_pc_stream.c
 
-C_SOURCES += Src/face_utils.c
-C_SOURCES += Src/target_embedding.c
 C_SOURCES += ../dummy_buffer/dummy_dual_buffer.c
 C_SOURCES += Middlewares/Camera_Middleware/ISP_Library/isp/Src/isp_algo.c
 C_SOURCES += Middlewares/Camera_Middleware/ISP_Library/isp/Src/isp_cmd_parser.c

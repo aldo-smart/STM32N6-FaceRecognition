@@ -101,50 +101,19 @@ bool config_manager_validate(const app_config_t *config)
         return false;
     }
     
-    /* Validate face detection parameters */
-    if (config->face_detection.confidence_threshold < 0.0f || 
-        config->face_detection.confidence_threshold > 1.0f) {
+    /* Validate weed detection parameters */
+    if (config->weed_detection.confidence_threshold < 0.0f || 
+        config->weed_detection.confidence_threshold > 1.0f) {
         return false;
     }
     
-    if (config->face_detection.nms_threshold < 0.0f || 
-        config->face_detection.nms_threshold > 1.0f) {
+    if (config->weed_detection.nms_threshold < 0.0f || 
+        config->weed_detection.nms_threshold > 1.0f) {
         return false;
     }
     
-    if (config->face_detection.max_detections == 0 || 
-        config->face_detection.max_detections > 100) {
-        return false;
-    }
-    
-    /* Validate face recognition parameters */
-    if (config->face_recognition.similarity_threshold < 0.0f || 
-        config->face_recognition.similarity_threshold > 1.0f) {
-        return false;
-    }
-    
-    if (config->face_recognition.embedding_scale <= 0.0f) {
-        return false;
-    }
-    
-    if (config->face_recognition.bbox_padding_factor < 1.0f || 
-        config->face_recognition.bbox_padding_factor > 2.0f) {
-        return false;
-    }
-    
-    /* Validate tracking parameters */
-    if (config->tracking.smooth_factor < 0.0f || 
-        config->tracking.smooth_factor > 1.0f) {
-        return false;
-    }
-    
-    if (config->tracking.iou_threshold < 0.0f || 
-        config->tracking.iou_threshold > 1.0f) {
-        return false;
-    }
-    
-    if (config->tracking.max_lost_frames == 0 || 
-        config->tracking.max_lost_frames > 100) {
+    if (config->weed_detection.max_detections == 0 || 
+        config->weed_detection.max_detections > 100) {
         return false;
     }
     
@@ -223,26 +192,11 @@ void config_manager_print(const app_config_t *config)
     printf("Version: 0x%08lX\n", (unsigned long)config->config_version);
     printf("CRC: 0x%08lX\n", (unsigned long)config->config_crc);
     
-    printf("\n--- Face Detection ---\n");
-    printf("Confidence Threshold: %.3f\n", config->face_detection.confidence_threshold);
-    printf("NMS Threshold: %.3f\n", config->face_detection.nms_threshold);
-    printf("Max Detections: %lu\n", (unsigned long)config->face_detection.max_detections);
-    printf("Enable Preprocessing: %s\n", config->face_detection.enable_preprocessing ? "Yes" : "No");
-    
-    printf("\n--- Face Recognition ---\n");
-    printf("Similarity Threshold: %.3f\n", config->face_recognition.similarity_threshold);
-    printf("Embedding Scale: %.3f\n", config->face_recognition.embedding_scale);
-    printf("Max Embeddings: %lu\n", (unsigned long)config->face_recognition.max_embeddings);
-    printf("Enable Alignment: %s\n", config->face_recognition.enable_alignment ? "Yes" : "No");
-    printf("BBox Padding Factor: %.3f\n", config->face_recognition.bbox_padding_factor);
-    
-    printf("\n--- Tracking ---\n");
-    printf("Smooth Factor: %.3f\n", config->tracking.smooth_factor);
-    printf("IoU Threshold: %.3f\n", config->tracking.iou_threshold);
-    printf("Max Lost Frames: %lu\n", (unsigned long)config->tracking.max_lost_frames);
-    printf("Min Init Confidence: %.3f\n", config->tracking.min_init_confidence);
-    printf("Association Threshold: %.3f\n", config->tracking.association_threshold);
-    printf("Enable Prediction: %s\n", config->tracking.enable_prediction ? "Yes" : "No");
+    printf("\n--- Weed Detection ---\n");
+    printf("Confidence Threshold: %.3f\n", config->weed_detection.confidence_threshold);
+    printf("NMS Threshold: %.3f\n", config->weed_detection.nms_threshold);
+    printf("Max Detections: %lu\n", (unsigned long)config->weed_detection.max_detections);
+    printf("Enable Preprocessing: %s\n", config->weed_detection.enable_preprocessing ? "Yes" : "No");
     
     printf("\n--- Performance ---\n");
     printf("Target FPS: %lu\n", (unsigned long)config->performance.target_fps);
@@ -274,30 +228,15 @@ void config_manager_print(const app_config_t *config)
  */
 static void config_set_defaults(app_config_t *config)
 {
-    /* Face detection defaults */
-    config->face_detection.confidence_threshold = FACE_DETECTION_CONFIDENCE_THRESHOLD;
-    config->face_detection.nms_threshold = 0.5f;
-    config->face_detection.max_detections = 10;
-    config->face_detection.enable_preprocessing = true;
-    
-    /* Face recognition defaults */
-    config->face_recognition.similarity_threshold = FACE_SIMILARITY_THRESHOLD;
-    config->face_recognition.embedding_scale = FACE_EMBEDDING_QUANTIZATION_SCALE;
-    config->face_recognition.max_embeddings = 100;
-    config->face_recognition.enable_alignment = true;
-    config->face_recognition.bbox_padding_factor = FACE_BBOX_PADDING_FACTOR;
-    
-    /* Tracking defaults */
-    config->tracking.smooth_factor = TRACKER_SMOOTH_FACTOR;
-    config->tracking.iou_threshold = TRACKER_IOU_THRESHOLD;
-    config->tracking.max_lost_frames = TRACKER_MAX_LOST_FRAMES;
-    config->tracking.min_init_confidence = TRACKER_MIN_INIT_CONFIDENCE;
-    config->tracking.association_threshold = TRACKER_ASSOCIATION_THRESHOLD;
-    config->tracking.enable_prediction = true;
+    /* Weed detection defaults */
+    config->weed_detection.confidence_threshold = 0.5f;
+    config->weed_detection.nms_threshold = 0.5f;
+    config->weed_detection.max_detections = 10;
+    config->weed_detection.enable_preprocessing = true;
     
     /* Performance defaults */
     config->performance.target_fps = TARGET_CAMERA_FPS;
-    config->performance.reverify_interval_ms = FACE_REVERIFY_INTERVAL_MS;
+    config->performance.reverify_interval_ms = 1000;
     config->performance.update_interval = PERFORMANCE_UPDATE_INTERVAL;
     config->performance.enable_profiling = false;
     
@@ -309,7 +248,7 @@ static void config_set_defaults(app_config_t *config)
     
     /* UI defaults */
     config->ui.button_long_press_ms = BUTTON_LONG_PRESS_DURATION_MS;
-    config->ui.led_timeout_ms = FACE_UNVERIFIED_LED_TIMEOUT_MS;
+    config->ui.led_timeout_ms = 1000;
     config->ui.enable_button_feedback = true;
 }
 

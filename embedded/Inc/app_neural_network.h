@@ -2,7 +2,7 @@
  ******************************************************************************
  * @file    app_neural_network.h
  * @author  PeleAB
- * @brief   Neural network processing module for face detection and recognition
+ * @brief   Neural network processing module for weed detection
  ******************************************************************************
  * @attention
  *
@@ -42,7 +42,7 @@ typedef struct {
 } nn_buffers_t;
 
 /**
- * @brief Face detection neural network context
+ * @brief Weed detection neural network context
  */
 typedef struct {
     nn_buffers_t buffers;               /**< Network buffers */
@@ -51,110 +51,50 @@ typedef struct {
     uint32_t inference_time_ms;         /**< Last inference time */
     uint32_t total_inferences;          /**< Total inference count */
     bool is_initialized;                /**< Initialization status */
-} face_detection_nn_t;
-
-/**
- * @brief Face recognition neural network context
- */
-typedef struct {
-    nn_buffers_t buffers;               /**< Network buffers */
-    float current_embedding[EMBEDDING_SIZE]; /**< Current face embedding */
-    uint32_t inference_time_ms;         /**< Last inference time */
-    uint32_t total_inferences;          /**< Total inference count */
-    bool embedding_valid;               /**< Embedding validity flag */
-    bool is_initialized;                /**< Initialization status */
-} face_recognition_nn_t;
+} weed_detection_nn_t;
 
 /* ========================================================================= */
 /* FUNCTION PROTOTYPES                                                       */
 /* ========================================================================= */
 
 /**
- * @brief Initialize face detection neural network
- * @param nn_ctx Pointer to face detection context
+ * @brief Initialize weed detection neural network
+ * @param nn_ctx Pointer to weed detection context
  * @param config Pointer to application configuration
  * @param memory_pool Pointer to memory pool
  * @return 0 on success, negative on error
  */
-int nn_face_detection_init(face_detection_nn_t *nn_ctx, 
+int nn_weed_detection_init(weed_detection_nn_t *nn_ctx, 
                           const app_config_t *config, 
                           memory_pool_t *memory_pool);
 
 /**
- * @brief Initialize face recognition neural network
- * @param nn_ctx Pointer to face recognition context
- * @param config Pointer to application configuration
- * @param memory_pool Pointer to memory pool
- * @return 0 on success, negative on error
- */
-int nn_face_recognition_init(face_recognition_nn_t *nn_ctx, 
-                            const app_config_t *config, 
-                            memory_pool_t *memory_pool);
-
-/**
- * @brief Process frame with face detection network
- * @param nn_ctx Pointer to face detection context
+ * @brief Process frame with weed detection network
+ * @param nn_ctx Pointer to weed detection context
  * @param input_frame Pointer to input frame data
  * @param frame_width Frame width in pixels
  * @param frame_height Frame height in pixels
  * @param config Pointer to application configuration
  * @return 0 on success, negative on error
  */
-int nn_face_detection_process(face_detection_nn_t *nn_ctx,
+int nn_weed_detection_process(weed_detection_nn_t *nn_ctx,
                              const uint8_t *input_frame,
                              uint32_t frame_width,
                              uint32_t frame_height,
                              const app_config_t *config);
 
 /**
- * @brief Process face region with recognition network
- * @param nn_ctx Pointer to face recognition context
- * @param face_region Pointer to face region data
- * @param region_width Region width in pixels
- * @param region_height Region height in pixels
- * @param config Pointer to application configuration
- * @return 0 on success, negative on error
- */
-int nn_face_recognition_process(face_recognition_nn_t *nn_ctx,
-                               const uint8_t *face_region,
-                               uint32_t region_width,
-                               uint32_t region_height,
-                               const app_config_t *config);
-
-/**
- * @brief Get face detection results
- * @param nn_ctx Pointer to face detection context
+ * @brief Get weed detection results
+ * @param nn_ctx Pointer to weed detection context
  * @param boxes Pointer to store detected bounding boxes
  * @param max_boxes Maximum number of boxes to return
  * @param box_count Pointer to store actual number of boxes
  * @return 0 on success, negative on error
  */
-int nn_face_detection_get_results(const face_detection_nn_t *nn_ctx,
+int nn_weed_detection_get_results(const weed_detection_nn_t *nn_ctx,
                                  pd_pp_box_t *boxes,
                                  uint32_t max_boxes,
                                  uint32_t *box_count);
-
-/**
- * @brief Get face recognition embedding
- * @param nn_ctx Pointer to face recognition context
- * @param embedding Pointer to store embedding data
- * @param embedding_size Size of embedding array
- * @return 0 on success, negative on error
- */
-int nn_face_recognition_get_embedding(const face_recognition_nn_t *nn_ctx,
-                                     float *embedding,
-                                     uint32_t embedding_size);
-
-/**
- * @brief Calculate similarity between two embeddings
- * @param embedding1 First embedding
- * @param embedding2 Second embedding
- * @param embedding_size Size of embeddings
- * @return Cosine similarity score (0.0 to 1.0)
- */
-float nn_calculate_embedding_similarity(const float *embedding1,
-                                       const float *embedding2,
-                                       uint32_t embedding_size);
 
 /**
  * @brief Prepare neural network input buffer
@@ -192,26 +132,17 @@ int nn_clean_invalidate_input_buffer(const nn_buffers_t *nn_ctx,
  * @param total_inferences Pointer to store total inference count
  * @return 0 on success, negative on error
  */
-int nn_get_performance_metrics(const face_detection_nn_t *nn_ctx,
+int nn_get_performance_metrics(const weed_detection_nn_t *nn_ctx,
                               float *avg_inference_time,
                               uint32_t *total_inferences);
 
 /**
- * @brief Deinitialize face detection neural network
- * @param nn_ctx Pointer to face detection context
+ * @brief Deinitialize weed detection neural network
+ * @param nn_ctx Pointer to weed detection context
  * @param memory_pool Pointer to memory pool
  * @return 0 on success, negative on error
  */
-int nn_face_detection_deinit(face_detection_nn_t *nn_ctx,
+int nn_weed_detection_deinit(weed_detection_nn_t *nn_ctx,
                             memory_pool_t *memory_pool);
-
-/**
- * @brief Deinitialize face recognition neural network
- * @param nn_ctx Pointer to face recognition context
- * @param memory_pool Pointer to memory pool
- * @return 0 on success, negative on error
- */
-int nn_face_recognition_deinit(face_recognition_nn_t *nn_ctx,
-                              memory_pool_t *memory_pool);
 
 #endif /* APP_NEURAL_NETWORK_H */

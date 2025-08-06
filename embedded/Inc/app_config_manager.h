@@ -28,37 +28,14 @@
 /* ========================================================================= */
 
 /**
- * @brief Face detection configuration parameters
+ * @brief Weed detection configuration parameters
  */
 typedef struct {
     float confidence_threshold;     /**< Detection confidence threshold */
     float nms_threshold;           /**< Non-maximum suppression threshold */
     uint32_t max_detections;       /**< Maximum number of detections per frame */
     bool enable_preprocessing;     /**< Enable input preprocessing */
-} face_detection_config_t;
-
-/**
- * @brief Face recognition configuration parameters
- */
-typedef struct {
-    float similarity_threshold;    /**< Face similarity threshold */
-    float embedding_scale;         /**< Embedding quantization scale */
-    uint32_t max_embeddings;       /**< Maximum stored embeddings */
-    bool enable_alignment;         /**< Enable face alignment */
-    float bbox_padding_factor;     /**< Bounding box padding factor */
-} face_recognition_config_t;
-
-/**
- * @brief Tracking configuration parameters
- */
-typedef struct {
-    float smooth_factor;           /**< Kalman filter smoothing factor */
-    float iou_threshold;           /**< IoU threshold for association */
-    uint32_t max_lost_frames;      /**< Maximum lost frames before track deletion */
-    float min_init_confidence;     /**< Minimum confidence for track initialization */
-    float association_threshold;   /**< Track association distance threshold */
-    bool enable_prediction;        /**< Enable motion prediction */
-} tracking_config_t;
+} weed_detection_config_t;
 
 /**
  * @brief Performance configuration parameters
@@ -93,9 +70,7 @@ typedef struct {
  * @brief Main application configuration structure
  */
 typedef struct {
-    face_detection_config_t face_detection;  /**< Face detection parameters */
-    face_recognition_config_t face_recognition; /**< Face recognition parameters */
-    tracking_config_t tracking;              /**< Tracking parameters */
+    weed_detection_config_t weed_detection;  /**< Weed detection parameters */
     performance_config_t performance;        /**< Performance parameters */
     protocol_config_t protocol;              /**< Protocol parameters */
     ui_config_t ui;                          /**< User interface parameters */

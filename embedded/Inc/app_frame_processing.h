@@ -39,8 +39,7 @@ extern "C" {
  */
 typedef struct {
     /* Neural network contexts */
-    face_detection_nn_t face_detection;      /**< Face detection network */
-    face_recognition_nn_t face_recognition;  /**< Face recognition network */
+    weed_detection_nn_t weed_detection;      /**< Weed detection network */
     
     
     /* Memory management */

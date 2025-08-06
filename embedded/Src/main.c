@@ -42,8 +42,6 @@
 #include "display_utils.h"
 #include "img_buffer.h"
 #include "system_utils.h"
-#include "face_utils.h"
-#include "target_embedding.h"
 #include "app_constants.h"
 #include "app_config_manager.h"
 #include "memory_pool.h"
@@ -54,11 +52,7 @@
 #include "mem_sections.h"
 
 /* Legacy compatibility - constants moved to app_constants.h */
-#define REVERIFY_INTERVAL_MS        FACE_REVERIFY_INTERVAL_MS
 #define MAX_NUMBER_OUTPUT           NN_MAX_OUTPUT_BUFFERS
-#define FR_WIDTH                    FACE_RECOGNITION_WIDTH
-#define FR_HEIGHT                   FACE_RECOGNITION_HEIGHT
-#define SIMILARITY_THRESHOLD        FACE_SIMILARITY_THRESHOLD
 #define LONG_PRESS_MS               BUTTON_LONG_PRESS_DURATION_MS
 
 
@@ -70,22 +64,15 @@ extern uint8_t __psram_bss_end__;
 
 /* Neural Network Context Structure */
 typedef struct {
-    /* Face Detection Network */
+    /* Weed Detection Network */
     uint8_t *detection_input_buffer;
     float32_t *detection_output_buffers[MAX_NUMBER_OUTPUT];
     int32_t detection_output_lengths[MAX_NUMBER_OUTPUT];
     uint32_t detection_input_length;
     int detection_output_count;
     
-    /* Face Recognition Network */
-    uint8_t *recognition_input_buffer;
-    float32_t *recognition_output_buffer;
-    uint32_t recognition_input_length;
-    uint32_t recognition_output_length;
-    
     /* Network Instance References */
     bool detection_initialized;
-    bool recognition_initialized;
 } nn_context_t;
 
 /* ========================================================================= */
@@ -101,7 +88,7 @@ typedef struct {
 
 /* Simplified Application State Machine - No Tracking */
 typedef enum {
-    PIPE_STATE_DETECT_AND_VERIFY = 0  /* Single state: detect faces and verify immediately */
+    PIPE_STATE_DETECT_AND_VERIFY = 0  /* Single state: detect weeds and classify immediately */
 } pipe_state_t;
 
 /**
@@ -125,10 +112,10 @@ typedef struct {
     pipe_state_t pipe_state;                /**< Current pipeline state */
     
     /* Current Frame Results */
-    pd_pp_box_t best_detection;             /**< Best face detection this frame */
-    float current_similarity;               /**< Current face similarity score */
-    bool face_detected;                     /**< Face detected in current frame */
-    bool face_verified;                     /**< Face verified in current frame */
+    pd_pp_box_t best_detection;             /**< Best weed detection this frame */
+    float current_similarity;               /**< Current weed confidence score */
+    bool face_detected;                     /**< Object detected in current frame */
+    bool face_verified;                     /**< Weed verified in current frame */
     
     /* Simple Target Detection History */
     bool target_detection_history[5];       /**< Last 5 frames target detection status */
@@ -139,10 +126,6 @@ typedef struct {
     /* LED Timeout Management */
     uint32_t last_stable_verification_ts;   /**< Timestamp of last stable verification */
     bool led_timeout_active;                /**< LED timeout status */
-    
-    /* Face Recognition */
-    float current_embedding[EMBEDDING_SIZE]; /**< Current face embedding */
-    int embedding_valid;                    /**< Embedding validity flag */
     
     /* User Interface */
     uint32_t button_press_ts;               /**< Button press timestamp */
@@ -167,7 +150,6 @@ PSRAM_BSS uint8_t nn_rgb[NN_WIDTH * NN_HEIGHT * NN_BPP];  /* 128x128x3 = 49KB */
 
 // __attribute__ ((section (".psram_bss")))
 // __attribute__((aligned (32)))
-PSRAM_BSS uint8_t fr_rgb[FR_WIDTH * FR_HEIGHT * NN_BPP];  /* 112x112x3 = 37KB */
 
 // __attribute__ ((aligned (32)))
 PSRAM_BSS uint8_t dcmipp_out_nn[DCMIPP_OUT_NN_BUFF_LEN];  /* Camera output buffer */
@@ -206,7 +188,6 @@ static app_context_t g_app_ctx = {
     .face_detected = false,
     .face_verified = false,
     .current_similarity = 0.0f,
-    .embedding_valid = 0,
     .button_press_ts = 0,
     .prev_button_state = 0,
     .target_detection_history = {false},
@@ -237,12 +218,10 @@ static void compute_target_detection_status(app_context_t *ctx);
 static void cleanup_nn_buffers(float32_t **nn_out, int32_t *nn_out_len, int number_output);
 
 /* Neural Network Instance Declarations */
-// LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(face_detection);
-// LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(face_recognition);
 LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(weed_detection);
 
 /**
- * @brief Initialize face detection network only (for faster boot)
+ * @brief Initialize weed detection network only (for faster boot)
  * @param nn_ctx Neural network context to initialize
  * @return 0 on success, negative on error
  */
@@ -289,7 +268,7 @@ static int nn_init_detection(nn_context_t *nn_ctx)
  */
 static void nn_cleanup(nn_context_t *nn_ctx)
 {
-    if (nn_ctx && (nn_ctx->detection_initialized || nn_ctx->recognition_initialized)) {
+    if (nn_ctx && nn_ctx->detection_initialized) {
         /* Clean up any network-specific resources if needed */
         memset(nn_ctx, 0, sizeof(*nn_ctx));
         printf("🧹 Neural Networks cleaned up\n");
@@ -512,8 +491,6 @@ static int app_init(app_context_t *ctx)
     LL_ATON_RT_RuntimeInit();
     
     /* Parallel initialization of independent components */
-    /* Initialize embeddings bank */
-    embeddings_bank_init();
     
     /* Initialize hardware components concurrently */
     BSP_LED_Init(LED1);
@@ -558,7 +535,7 @@ static void update_led_status(app_context_t *ctx)
     } else {
         /* No objects detected - check if we should maintain green LED due to recent detection */
         if (ctx->last_stable_verification_ts != 0 && 
-            (current_time - ctx->last_stable_verification_ts) < FACE_UNVERIFIED_LED_TIMEOUT_MS) {
+            (current_time - ctx->last_stable_verification_ts) < 1000) {
             /* Keep green LED on for timeout period after last positive detection */
             BSP_LED_On(LED2);
             BSP_LED_Off(LED1);
@@ -674,7 +651,7 @@ static int pipeline_stage_capture_and_preprocess(app_context_t *ctx, uint32_t pi
 }
 
 /**
- * @brief Pipeline Stage 2: Face Detection Neural Network
+ * @brief Pipeline Stage 2: Weed Detection Neural Network
  * @param ctx Application context
  * @return 0 on success, negative on error
  */
@@ -698,7 +675,7 @@ static int pipeline_stage_face_detection(app_context_t *ctx)
 }
 
 /**
- * @brief Pipeline Stage 3: Post-Processing and Face Extraction
+ * @brief Pipeline Stage 3: Post-Processing and Object Extraction
  * @param ctx Application context
  * @return 0 on success, negative on error
  */
@@ -733,7 +710,7 @@ static int pipeline_stage_postprocessing(app_context_t *ctx)
 }
 
 /**
- * @brief Pipeline Stage 4: Object Classification and Filtering
+ * @brief Pipeline Stage 4: Weed Classification and Filtering
  * @param ctx Application context
  * @return 0 on success, negative on error
  */
@@ -861,8 +838,8 @@ static int app_main_loop(app_context_t *ctx)
     app_camera_init(&pitch_nn);
     
     app_display_init();
-    lcd_smoke_test();
-    HAL_Delay(15000);
+    // lcd_smoke_test();
+    // HAL_Delay(15000);
     // psram_bss_zero();
     // lcd_smoke_test();
     app_input_start();
@@ -882,21 +859,21 @@ static int app_main_loop(app_context_t *ctx)
         }
         //HINT: for dummy input the first elements of (float32_t *)ctx->nn_ctx.detection_input_buffer should look like: {206, 209, 211, 212, 213, 213, 214, 214, 214, 214, 213 <repeats 14 times>, 212, 212, 211, 208, 207, 204, 199, 193, 189, 182, 174, 163, 151, 139, 129, 119, 110, 104, 104, 106, 108, 114, 121, 126, 132, 137, 140, 141, 147, 152, 152, 152, 153, 153, 154, 154, 154, 154, 153, 151, 152, 152, 151, 150, 149, 149, 147, 146, 142, 135, 126, 114, 107, 97, 87, 73, 60, 47, 32, 19, 12, 14, 19, 26, 32, 37, 42, 52, 60, 63, 67, 70, 70, 71, 72, 72}
 
-        /* Stage 2: Face Detection Neural Network */
+        /* Stage 2: Weed Detection Neural Network */
         if (pipeline_stage_face_detection(ctx) != 0) {
             continue; /* Skip this frame on error */
         }
         
         //HINT: for dummy input the first elements of ctx->nn_ctx.detection_output_buffers[0] should look like: {1.89764965, 1.77754533, 1.62140954, 1.64543045, 1.68146181, 1.68146181, 1.92167056...}
 
-        /* Stage 3: Post-Processing and Face Extraction */
+        /* Stage 3: Post-Processing and Object Extraction */
         if (pipeline_stage_postprocessing(ctx) != 0) {
             continue; /* Skip this frame on error */
         }
         
         //HINT: for dummy input the cctx->pp_output->pOutData.x_center = 0.5113132 ctx->pp_output->pOutData.y_center = 0.543815017
 
-        /* Stage 4: Object Classification and Filtering */
+        /* Stage 4: Weed Classification and Filtering */
         if (pipeline_stage_object_classification(ctx) != 0) {
             continue; /* Skip this frame on error */
         }
