@@ -41,8 +41,8 @@ Rectangle_TypeDef lcd_bg_area = {
   .X0 = 0,
 #endif
   .Y0 = 0,
-  .XSize = 640,
-  .YSize = 640,
+  .XSize = 0,
+  .YSize = 0,
 };
 
 Rectangle_TypeDef lcd_fg_area = {

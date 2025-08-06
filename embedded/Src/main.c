@@ -682,39 +682,17 @@ static int pipeline_stage_face_detection(app_context_t *ctx)
 {
     printf("PIPELINE STAGE 2: Weed Detection Network\n");
     
-    /* Step 2.1: Initialize weed detection network */
-    printf("   Initializing weed detection network...\n");
-    if (LL_ATON_RT_Init_Network(&NN_Instance_weed_detection) != LL_ATON_RT_OK) {
-        printf("   ERROR: Failed to initialize weed detection network\n");
-        return -1;
-    }
-    
-    /* Step 2.2: Set input buffer */
-    if (LL_ATON_RT_Set_Input_Buffer(&NN_Instance_weed_detection, 0, ctx->nn_ctx.detection_input_buffer) != LL_ATON_RT_OK) {
-        printf("   ERROR: Failed to set input buffer\n");
-        return -1;
-    }
-    
-    /* Step 2.3: Run weed detection neural network */
-    printf("   Running weed detection neural network inference...\n");
+    /* Step 2.1: Run weed detection neural network */
+    printf("Running weed detection neural network inference...\n");
     uint32_t start_time = HAL_GetTick();
-    if (LL_ATON_RT_Invoke(&NN_Instance_weed_detection) != LL_ATON_RT_OK) {
-        printf("   ERROR: Neural network inference failed\n");
-        return -1;
-    }
+    RunNetworkSync(&NN_Instance_weed_detection);
     uint32_t inference_time = HAL_GetTick() - start_time;
     
-    /* Step 2.4: Get output buffers */
-    for (int i = 0; i < LL_ATON_WEED_DETECTION_OUT_NUM; i++) {
-        ctx->nn_ctx.detection_output_buffers[i] = (float32_t *)LL_ATON_RT_Get_Output_Buffer(&NN_Instance_weed_detection, i);
-        ctx->nn_ctx.detection_output_lengths[i] = LL_ATON_RT_Get_Output_Buffer_Size(&NN_Instance_weed_detection, i);
-    }
-    ctx->nn_ctx.detection_output_count = LL_ATON_WEED_DETECTION_OUT_NUM;
+    /* Step 2.2: Network cleanup */
+    printf("Cleaning up neural network resources...\n");
+    LL_ATON_RT_DeInit_Network(&NN_Instance_weed_detection);
     
-    /* Step 2.5: Cache invalidation for output buffers */
-    cleanup_nn_buffers(ctx->nn_ctx.detection_output_buffers, ctx->nn_ctx.detection_output_lengths, ctx->nn_ctx.detection_output_count);
-    
-    printf("   Weed detection completed in %lu ms (%d outputs ready)\n", 
+    printf("Weed detection completed in %lu ms (%d outputs ready)\n", 
            inference_time, ctx->nn_ctx.detection_output_count);
     return 0;
 }
@@ -881,9 +859,12 @@ static int app_main_loop(app_context_t *ctx)
     /* Initialize camera and display systems */
     printf("Initializing Camera and Display Systems\n");
     app_camera_init(&pitch_nn);
+    
     app_display_init();
-    psram_bss_zero();
     lcd_smoke_test();
+    HAL_Delay(15000);
+    // psram_bss_zero();
+    // lcd_smoke_test();
     app_input_start();
     printf("Systems initialized, starting pipeline\n");
     printf("═══════════════════════════════════════════════════════════\n");
