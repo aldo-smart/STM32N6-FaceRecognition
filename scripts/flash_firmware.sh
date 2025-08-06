@@ -468,7 +468,7 @@ main() {
         print_status "1. Switch BOOT1 to left position (boot from flash)"
         print_status "2. Power cycle the board"
         print_status "3. Check UART output at 921600 baud"
-        print_status "4. Connect PC streaming client for face detection/recognition"
+        print_status "4. Connect PC streaming client for weed detection"
     else
         print_error "❌ Firmware flashing completed with errors"
         print_error "Please check the error messages above and try again"

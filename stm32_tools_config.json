@@ -47,30 +47,13 @@
     "description": "Default path to application binary for signing"
   },
   "models": {
-      "face_recognition": {
-      "name": "face_recognition", 
-      "filename": "mobilefacenet_int8_faces.onnx",
-      "address": "0x72000000",
-      "target": "stm32n6",
-      "input_data_type": "float32",
-      "stedgeai_options": "-O0 --all-buffers-info --mvei --cache-maintenance --Oalt-sched --enable-virtual-mem-pools --Omax-ca-pipe 4 --Ocache-opt --Os --enable-epoch-controller --native-float"
-    },
-    "face_detection": {
-      "name": "face_detection",
-      "filename": "centerface.tflite",
+    "weed_detection": {
+      "name": "weed_detection",
+      "filename": "WEED-STM-640-int8-qdq.onnx",
       "address": "0x71000000",
       "target": "stm32n6",
       "input_data_type": "float32",
       "stedgeai_options": "-O0 --all-buffers-info --mvei --cache-maintenance --Oalt-sched --enable-virtual-mem-pools --Omax-ca-pipe 4 --Ocache-opt --Os --enable-epoch-controller"
-    },
-    "weed_detection": {
-      "name": "weed_detection",
-      "filename": "WEED-STM-640-int8-qdq.onnx",
-      "address": "0x73000000",
-      "target": "stm32n6",
-      "input_data_type": "float32",
-      "stedgeai_options": "-O0 --all-buffers-info --mvei --cache-maintenance --Oalt-sched --enable-virtual-mem-pools --Omax-ca-pipe 4 --Ocache-opt --Os --enable-epoch-controller"
     }
-
   }
 }
