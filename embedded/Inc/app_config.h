@@ -55,8 +55,8 @@
 /* Model Related Info */
 #define POSTPROCESS_TYPE POSTPROCESS_OD_YOLO_V5_UU
 
-#define NN_WIDTH (640)
-#define NN_HEIGHT (640)
+#define NN_WIDTH (128)
+#define NN_HEIGHT (128)
 #define NN_BPP (3)
 
 #define COLOR_BGR (0)
@@ -93,8 +93,8 @@
 #define AI_OBJDETECT_YOLOV2_PP_MAX_BOXES_LIMIT   (10)
 
 /* YOLOv5 Weed Detection parameters */
-#define AI_OD_YOLOV5_PP_WIDTH                    (640)
-#define AI_OD_YOLOV5_PP_HEIGHT                   (640)
+#define AI_OD_YOLOV5_PP_WIDTH                    (128)
+#define AI_OD_YOLOV5_PP_HEIGHT                   (128)
 #define AI_OD_YOLOV5_PP_NB_CLASSES              (11)
 #define AI_OD_YOLOV5_PP_TOTAL_BOXES             (15120)  // For 640x640: (80x80 + 40x40 + 20x20) * 3 anchors
 #define AI_OD_YOLOV5_PP_CONF_THRESHOLD          (0.25f)

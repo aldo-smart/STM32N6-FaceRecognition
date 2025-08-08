@@ -49,7 +49,7 @@
   "models": {
     "weed_detection": {
       "name": "weed_detection",
-      "filename": "WEED-STM-640-int8-qdq.onnx",
+      "filename": "WEED-STM-128-int8-qdq.onnx",
       "address": "0x71000000",
       "target": "stm32n6",
       "input_data_type": "float32",

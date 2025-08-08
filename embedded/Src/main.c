@@ -144,15 +144,18 @@ bool g_cropped_face_valid = false;
 float g_current_similarity = 0.0f;
 
 /* Optimized Memory Buffers - Using PSRAM for large buffers to reduce boot time */
-// __attribute__ ((section (".psram_bss")))
-// __attribute__((aligned (32)))
-PSRAM_BSS uint8_t nn_rgb[NN_WIDTH * NN_HEIGHT * NN_BPP];  /* 128x128x3 = 49KB */
+__attribute__ ((section (".psram_bss")))
+__attribute__((aligned (32)))
+uint8_t nn_rgb[NN_WIDTH * NN_HEIGHT * NN_BPP];
+// PSRAM_BSS uint8_t nn_rgb[NN_WIDTH * NN_HEIGHT * NN_BPP];  /* 128x128x3 = 49KB */
 
 // __attribute__ ((section (".psram_bss")))
 // __attribute__((aligned (32)))
+// uint8_t fr_rgb[FR_WIDTH * FR_HEIGHT * NN_BPP];
 
-// __attribute__ ((aligned (32)))
-PSRAM_BSS uint8_t dcmipp_out_nn[DCMIPP_OUT_NN_BUFF_LEN];  /* Camera output buffer */
+__attribute__ ((aligned (32)))
+uint8_t dcmipp_out_nn[DCMIPP_OUT_NN_BUFF_LEN];
+// PSRAM_BSS uint8_t dcmipp_out_nn[DCMIPP_OUT_NN_BUFF_LEN];  /* Camera output buffer */
 
 #ifdef DUMMY_INPUT_BUFFER
 /* ========================================================================= */
